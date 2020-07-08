@@ -209,7 +209,7 @@ while conv == 0
         V.post  = posts(1:i);
         conv    = 1;
     end
-    sound(3*sin(linspace(0,90*pi,2000)))        % play sound to indicate iteration is over
+%     sound(3*sin(linspace(0,90*pi,2000)))        % play sound to indicate iteration is over
 end
 
 V.fast_time = cputime-starttime;                % time to run code
