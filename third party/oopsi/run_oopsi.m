@@ -1,4 +1,4 @@
-function varargout = run_oopsi(F,V,P, extra)
+function varargout = run_oopsi(F,V,P)
 % this function runs our various oopsi filters, saves the results, and
 % plots the inferred spike trains.  make sure that fast-oopsi and
 % smc-oopsi repository are in your path if you intend to use them.
@@ -31,23 +31,19 @@ end
 
 if nargin < 2, V = struct;   end         % create structure for algorithmic variables, if none provided
 if ~isfield(V,'fast_iter_max')
-%     V.fast_iter_max = input('\nhow many iterations of fast-oopsi would you like to do [0,1,2,...]: ');
-    V.fast_iter_max = extra.fast_iter_max; 
+    V.fast_iter_max = input('\nhow many iterations of fast-oopsi would you like to do [0,1,2,...]: ');
 end
 if ~isfield(V,'smc_iter_max')
-%     V.smc_iter_max = input('\how many iterations of smc-oopsi would you like to do [0,1,2,...]: ');
-    V.smc_iter_max = extra.smc_iter_max;
+    V.smc_iter_max = input('\how many iterations of smc-oopsi would you like to do [0,1,2,...]: ');
 end
 
 if ~isfield(V,'dt')                                    % frame duration
-%     fr = input('\nwhat was the frame rate for this movie (in Hz)?: ');
-    fr = extra.fr;
+    fr = input('\nwhat was the frame rate for this movie (in Hz)?: ');
     V.dt = 1/fr;
 end
 
 if ~isfield(V,'preprocess')
-%     V.preprocess = input('\ndo you want to high-pass filter [0=no, 1=yes]?: ');
-    V.preprocess = extra.preprocess;
+    V.preprocess = input('\ndo you want to high-pass filter [0=no, 1=yes]?: ');
 end
 
 if ~isfield(V,'n_max')     V.n_max     = 2;        end

@@ -205,7 +205,7 @@ while conv == 0
     % if lik doesn't change much (relatively), or returns to some previous state, stop iterating
     if  i>=V.fast_iter_max || (abs((posts(i)-posts(i-1))/posts(i))<1e-3 || any(posts(1:i-1)-posts(i))<1e-5)% abs((posts(i)-posts(i-1))/posts(i))<1e-5 || posts(i-1)-posts(i)>1e5;
         MakePlot(n,F,P,V);
-        disp('convergence criteria met')
+%         disp('convergence criteria met')
         V.post  = posts(1:i);
         conv    = 1;
     end
