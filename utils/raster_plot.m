@@ -7,10 +7,10 @@ function [F,r] = raster_plot(M,x_axis)
 %
 %   OUTPUTS:
 %       F - handle to the figure
-%       r = handle to raster plots (struct)
+%       r - handle to raster plots (struct)
 %
 %see also probability_to_binary
-%Part of ZENITH source
+%Part of ZENITH utils
 
 if nargin < 2
     x_axis = 1:numel(M(1,:));
@@ -33,3 +33,5 @@ for im = 0:numel(M(:,1))-1
     yPoints = yPoints(:);
     r(im+1) = plot(xPoints,yPoints,'k');hold on
 end
+% plot([0.9*10^4 0.9*10^4], get(AX, 'ylim'), 'r-');
+% plot([1.7*10^4 1.7*10^4], get(AX, 'ylim'), 'r-');
