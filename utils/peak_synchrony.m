@@ -18,9 +18,10 @@ end
 
 sz = size(M);
 length = sz(2);
-
-for il = 1:length-samp_window
+zero_append = zeros(sz(1),samp_window-1);
+M = horzcat(M, zero_append);
+%appending samp_window-1 zero columns to the end of the matrix
+for il = 1:length
     subM = M(:,il:il+samp_window-1);
     SYNC(il) = sum(any(subM,2));
 end
-a=1;
