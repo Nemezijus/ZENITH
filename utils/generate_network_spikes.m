@@ -42,6 +42,6 @@ end
 FILEloc = 'C:\Users\nagy.dominika\Desktop';
 currloc = cd;
 cd(FILEloc)
-fname = ['m', ex.id, '_test', '.mat'];
+fname = ['m', ex.id, '_stage', num2str(istage), '.mat'];
 save(fname, 'MMM', '-v7.3');
 cd(currloc)
