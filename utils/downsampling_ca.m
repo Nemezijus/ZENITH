@@ -1,4 +1,4 @@
-function [M, T, IO] = downsampling_ca(binsize, ex, iroi, istage, istim, irep)
+function [M, T, IO, fs] = downsampling_ca(binsize, ex, iroi, istage, istim, irep)
 % DESCRIPTION LATER
 
 
@@ -53,6 +53,7 @@ start = reftime(stdur_idx(1));
 stop = reftime(stdur_idx(end));
 IO = [stdur_idx(1) stdur_idx(end)];
 T = reftime;
+fs = W.Fs(1);
 
 
 

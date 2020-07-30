@@ -1,4 +1,4 @@
-function [V] = generate_V(w,Params)
+function [V] = generate_V(ref_data, fs, Params)
 
 V = struct;
 if nargin == 1
@@ -7,8 +7,8 @@ if nargin == 1
     Params.preproc = 0;
 end
 V.Npixels= 1;
-V.T= size(w.data,2);
-V.dt= 1/round(w.Fs(1)*1e6);
+V.T= size(ref_data,2);
+V.dt= 1/round(fs*1e6);
 V.est_a= 0;
 V.est_b= 1;
 V.est_gam= 0;

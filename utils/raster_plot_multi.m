@@ -58,7 +58,7 @@ end
 axes(AX2)
 plot(Time, SYNC_real, 'k');
 hold on
-plot(Time, p_thr*ones(1,numel(Time)), 'r--');
+plot(Time, p_thr*ones(1,numel(Time)), 'r-');
 
 % PATCH
 color = [.7 .7 .7];
@@ -90,6 +90,15 @@ AX2.FontSize = 5;
 %         set(AX1, 'TickLength', [0 0]);
 AX1.XTick = [];
 set(AX2, 'TickLength', [0 0]);
+
+% AXIS INSCRIPTIONS
+AX1.YLabel.String = 'active cell #';
+AX1.YLabel.FontSize = 8;
+AX2.YLabel.String = 'co-cells';
+AX2.YLabel.FontSize = 8;
+AX2.XLabel.String = 'time, ms';
+AX2.XLabel.FontSize = 8;
+
 
 
 
