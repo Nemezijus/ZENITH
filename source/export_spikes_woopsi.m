@@ -1,4 +1,4 @@
-function [MM, T, onoff] = export_spikes_woopsi(ex, iroi, istage, istim, irep, Params)
+function [MM] = export_spikes_woopsi(M, fs, Params)
 % M = export_spikes_woopsi(ex,iroi,istage,istim,V) - extracts spiker from experiment object ex, and
 % stores the spike probabilites in a matrix M.
 %
@@ -23,31 +23,14 @@ function [MM, T, onoff] = export_spikes_woopsi(ex, iroi, istage, istim, irep, Pa
 %See also run_oopsi, downsampling_ca, generate_V
 %Part of ZENITH utils
 
-% -- Step 0
-if nargin < 5
-    irep = 0;
+if nargin < 3
     Params.ifast = 100;
     Params.ismc = 0;
     Params.preproc = 0;
 end
 
-if nargin < 6
-    Params.ifast = 100;
-    Params.ismc = 0;
-    Params.preproc = 0;
-end
-
-% -- Step 1
-% export traces of experiment object and store them in a waveform object
-W_ref = traces(ex, [iroi, istage, istim, 1], 'dff');
-V = generate_V(W_ref,Params);
-
-% -- Step 1/2 (will not stay here)(probably)
-[M, T, onoff] = downsampling_ca(4, ex, iroi, istage, istim);
+V = generate_V(M, fs, Params);
 V.T= size(M,2);
-
-% -- Step 2
-% M = W.data;
 MM = M;
 for irep = 1:size(M, 1)
     nbest = run_oopsi(M(irep,:), V);

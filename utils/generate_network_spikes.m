@@ -1,4 +1,4 @@
-function [MMM, time, onoff] = generate_network_spikes(ex, istage)
+function [reM, time, onoff] = generate_network_spikes(ex, istage)
 % [MMM] = generate_network_spikes(ex, istage) - creates a matrix with 
 % [nroi x nstims*nreps*nsamples] dimensions, where the columns contain the
 % stitched spike probabilities. As the process is time consuming, we save
@@ -16,32 +16,29 @@ function [MMM, time, onoff] = generate_network_spikes(ex, istage)
 
 
 % Part 1
-% this part takes a while!
-MMM = [];
-checker = 1;
+reM = [];
 refmx = ex.restun{istage};
-for iroi = 1:ex.N_roi
+for iroi =1:ex.N_roi
     disp(['Processing ROI_', num2str(iroi)]);
     MM = [];
     for irep = 1:ex.N_reps(istage)
         [~, rearranged] = sort(refmx(:,irep));
-        M = export_spikes_woopsi(ex, iroi, istage, 0, irep);
-        %                 B = probability_to_binary(M);
-        %                 B = B(rearranged,:);
+        [M, ~, ~, fs] = downsampling_ca(1, ex, iroi, istage, 0, irep);
         M = M(rearranged,:);
         for istim = 1:ex.N_stim(istage)
             MM = [MM, M(istim,:)];
         end
     end
-    MMM = [MMM; MM];
+    spM = export_spikes_woopsi(MM, fs);
+    reM = [reM; spM];
 end
-[~, time, onoff] = export_spikes_woopsi(ex, iroi, istage, 1, 1);
+[~, time, onoff] = downsampling_ca(1,ex, iroi, istage, 1, 1);
 
 % Part 2
-% save gigantic mx
 FILEloc = 'C:\Users\nagy.dominika\Desktop';
 currloc = cd;
 cd(FILEloc)
-fname = ['m', ex.id, '_stage', num2str(istage), '.mat'];
-save(fname, 'MMM', '-v7.3');
+fname = ['m', ex.id, '_stage', num2str(istage),'_proper', '.mat'];
+disp(['SAVING ', fname]);
+save(fname, 'reM', '-v7.3');
 cd(currloc)
