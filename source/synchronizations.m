@@ -1,4 +1,4 @@
-function [SYNC, Pcutoff, B] = synchronizations(M,PAR)
+function [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR)
 % [SYNC, Pcutoff] = synchronizations(M,PAR) - coagulates analysis
 % methods to convert spiking probability matrix M into Synchornization
 % vector and significance threshold
@@ -30,7 +30,6 @@ if nargin < 2
     PARloc = strjoin({loc{:},'utils','SYNC_PARS.mat'},'\');
     load(PARloc);
 end
-
 if PAR.treat_artifacts
     sz = size(M);
     period = sz(2)./PAR.Nrecs;
