@@ -18,8 +18,11 @@ end
 
 M_size = size(M);
 B = zeros(M_size);
+Msd = std2(M);%for the whole matrix
+sd_thr = thr.*Msd;
 for im = 1:M_size(1)
     Msd = std(M(im,:));
-    sd_thr = thr.*Msd;
+%     mm(im) = Msd;
+%     sd_thr = thr.*Msd;
     B(im,M(im,:)>sd_thr) = 1;
 end
