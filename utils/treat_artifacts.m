@@ -18,6 +18,7 @@ N =[];
 
 for isam = 1:nstart
     N = [N,[0:sz(2)./period - 1].*period + isam];
+    N = [N,[1:sz(2)./period].*period - (isam-1)];
 end
 N = sort(N);
 M(:,N) = 0;
