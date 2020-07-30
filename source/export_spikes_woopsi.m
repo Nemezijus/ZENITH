@@ -3,12 +3,10 @@ function [MM] = export_spikes_woopsi(M, fs, Params)
 % stores the spike probabilites in a matrix M.
 %
 %  INPUTS:
-%       exdata - experiment object
-%       iroi - number of desired roi (loop through all)
-%       istage - number of desired stage (between 1-6)
-%       istim - number of desired stimulus (between 1-9)
-%       irep - number of desired repetitions, 0 by default -> extract all
-%       traces into waveform object
+%       M - stitched line containing the whole measurement with repetitions
+%       in order, corresponding to the activity of a single roi (double
+%       vector)
+%       fs - sample frequency of the date (double value)
 %       Params - parameters necessary to define to fast_oopsi to work properly
 %           - ifast: number of iterations of fast oopsi (0,1,...)
 %           - ismc: number of iterations of smc oopsi (it should be 0)
@@ -16,7 +14,7 @@ function [MM] = export_spikes_woopsi(M, fs, Params)
 %           (- fr: frame rate in Hz (== 1/fr))
 %
 %  OUTPUTS:
-%       M - [r X fs] matrix storing spike probabilities where r is repetition
+%       MM - [r X fs] matrix storing spike probabilities where r is repetition
 %       size and fs is frame size
 %       time - time axis of the desired trace(s) (for plotting)
 % 

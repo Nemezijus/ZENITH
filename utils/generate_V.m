@@ -1,4 +1,15 @@
 function [V] = generate_V(ref_data, fs, Params)
+% [V] = generate_V(ref_data, fs, Params) generates the V struct which is a
+% "musthave" input to run_oopsi
+%
+% INPUTS:
+%       ref_data - data on what oopsi will be carried out
+%       fs - sample frequency to count frame duration
+%       Params - obligatory fast oopsi parameters
+%
+% OUTPUTS:
+%       V - V struct with fast oopsi algorithm parameters
+%Part of ZENITH utils
 
 V = struct;
 if nargin == 1
