@@ -17,6 +17,13 @@ if nargin < 2
 end
 
 shuffled_max = max(SYNC_shuffled, [], 2);
-[h_counts, h_ranges] = histcounts(shuffled_max,numel(unique(shuffled_max))); 
-h_max = floor(max(h_ranges));
-pval_thr = round(h_max - h_max*pval); % requires refactorization later on
+[h_counts, h_units] = hist(shuffled_max,unique(shuffled_max)); 
+subs = sum(h_counts)*pval;
+for n=numel(h_counts):-1:1
+    if subs>=h_counts(n)
+        subs = subs-h_counts(n);
+        continue
+    end
+    pval_thr = h_units(n);
+    break
+end
