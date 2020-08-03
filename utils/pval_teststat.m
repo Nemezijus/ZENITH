@@ -8,8 +8,6 @@ function [pval_thr] = pval_teststat(SYNC_shuffled, pval)
 %
 %   OUTPUTS:
 %       pval - p-value corresponding cutoff threshold
-%       
-%
 %Part of ZENITH utils
 
 if nargin < 2

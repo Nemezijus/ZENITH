@@ -11,7 +11,6 @@ function raster_plot_multi(ex, M, T, onoff, SYNC_real, p_thr)
 %       p_thr - 
 %
 %   OUTPUTS:
-%       -
 %
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
