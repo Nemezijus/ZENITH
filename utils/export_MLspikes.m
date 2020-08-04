@@ -1,0 +1,31 @@
+function [Ffit, n] = export_MLspikes(roi_stitched, par)
+% [Ffit, spikes] = export_MLspikes(roi_stitched, par) exports MLspike data
+%
+% INPUTS:
+%       roi_stitched - full, stitched traces of calcium signal of a roi
+%       par - parameter struct, where fields are:
+%           a - amplitude of 1 spike (0.05 by default)
+%           tau - decay time (0.5 sec by default)
+%           dt - frame acquisition time (calculated within function)
+%           F0 - baseline fluorescence (calculated within function)
+%           dographsummary - 0 by default
+%
+% OUTPUTS:
+%       Ffit - vector of spike-threshold for calcium signal 
+%       n - vector of spike counts
+%
+%See also spikes-master, brick-master, tps_mlspikes
+%Based on visc_MLspike_single
+%Part of ZENITH source/utils
+
+if nargin < 2
+    loc = [mfilename('fullpath'),'.m'];%path to this HUB file
+    loc = strsplit(loc,'\');
+    loc = loc(1:end-2);
+    PARloc = strjoin({loc{:},'utils','MLs_PARS.mat'},'\');
+    load(PARloc);
+end
+
+par.dt = (roi_stitched.time(2)-roi_stitched.time(1)) * 1e-3;
+ca_stitched = roi_stitched.data;
+[n, Ffit, par, LL, xest, drift] = tps_mlspikes(ca_stitched', par);
