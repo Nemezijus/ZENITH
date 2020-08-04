@@ -16,6 +16,8 @@ function [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR)
 %           rule - shuffling rule
 %           samp_window - window size in samples for synchronization count
 %           pval - statistical significance threshold (recommended - 0.01)
+%           normalize - wheteher to normalize spike probabilities within
+%                   each row
 %
 %   OUTPUTS:
 %       SYNC - synchronization vector of real data M
@@ -39,7 +41,7 @@ if PAR.treat_artifacts
     M = treat_artifacts(M, PAR.nstart, period);
 end
 
-B = probability_to_binary(M, PAR.sd_thr);
+B = probability_to_binary(M, PAR.sd_thr, PAR.normalize);
 
 [SYNC, SYNC_shuffled] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
 
