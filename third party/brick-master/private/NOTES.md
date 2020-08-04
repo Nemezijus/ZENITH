@@ -1,1 +1,0 @@
-This `private` folder contains code dowloaded from the [Matlab file exchange](http://fr.mathworks.com/matlabcentral/fileexchange/) and that is used by some functions of the `brick` toolbox. Note that some of these downloaded functions have been edited and therefore might not behave identically to functions found on the website.
