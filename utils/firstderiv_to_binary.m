@@ -1,4 +1,4 @@
-function [B] = firstderiv_to_binary(ex, istage)
+function [B, M] = firstderiv_to_binary(ex, istage)
 % [B] = firstderiv_to_binary(ex,istage) creates the binary matrix based
 % upon the preset threshold of 2.5 times the sd of noise from the first
 % derivative of dff calcium signals of each rois
@@ -22,6 +22,6 @@ for iroi = 1:ex.N_roi
     DXDT = [DXDT; dxdt];
 end
 
-B = double(DXDT >= std2(DXDT)*2.5);
+B = double(DXDT >= std2(DXDT)*3);
 
 

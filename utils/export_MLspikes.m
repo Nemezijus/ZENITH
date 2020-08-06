@@ -14,6 +14,10 @@ function [Ffit, n] = export_MLspikes(roi_stitched, par)
 %       Ffit - vector of spike-threshold for calcium signal 
 %       n - vector of spike counts
 %
+% COMMENTS:
+%       a = 0.175 and tau = 0.7 seemed a better parameter choice than the by
+%       default set
+%
 %See also spikes-master, brick-master, tps_mlspikes
 %Based on visc_MLspike_single
 %Part of ZENITH source/utils
