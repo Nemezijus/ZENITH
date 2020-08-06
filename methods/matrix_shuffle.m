@@ -43,19 +43,18 @@ if fastmethod
     count = 1;
     for ish = 1:sz(1)
         if not_empty(ish)
-            cshr = SHM(ish,:);
-            cshr(idxs{count}) = 1;
-            SHM(ish,:) = cshr;
+%             cshr = SHM(ish,:);
+%             cshr(idxs{count}) = 1;
+%             SHM(ish,:) = cshr;
+            SHM(ish,idxs{count}) = 1;
             count = count+1;
-        else
-            SHM(ish,:) = M(ish,:);
+%         else
+%             SHM(ish,:) = M(ish,:);
         end
     end
     
     
 else
-    
-    
     switch dim
         case 1
             SH = zeros(size(M(1,:)));
