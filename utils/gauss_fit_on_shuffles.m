@@ -45,14 +45,14 @@ if toplot
     plot(h_unitsinterp, yinterp,'r-','linew',3);
     ylabel('fraction of total');
     xlabel('coactivation count');
-    xlim([min(maxSH), max(maxSH)]);
+%     xlim([min(maxSH), max(maxSH)]);
     text(0.85, 0.95, ['p = ', num2str(Pval)], 'units', 'normalized');
     text(0.85, 0.85, ['thr = ', sprintf('%0.2f',Plim_right)], 'units', 'normalized','color','r');
     text(0.001, 0.85, ['thr = ', sprintf('%0.2f',Plim_left)], 'units', 'normalized');
     
     axes(AX(2));
     h = histfit(maxSH,numel(unique(maxSH)));
-    xlim([min(maxSH), max(maxSH)]);
+%     xlim([min(maxSH), max(maxSH)]);
     yl = ylim;
     xl = xlim;
     hold on;
