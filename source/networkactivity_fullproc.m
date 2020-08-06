@@ -31,10 +31,6 @@ if PAR.Nrecs ~= ex.N_stim(istage)*ex.N_reps(istage)
     PAR.Nrecs = ex.N_stim(istage)*ex.N_reps(istage);
 end
 
-% -by default PAR settings so far
-PAR.treat_artifacts = 1;
-PAR.nstart = 30;
-
 % run synchronized evaluation methods
 [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR);
 
@@ -43,5 +39,6 @@ PAR.pcutoff = Pcutoff;
 
 % visualize
 plot_networkactivity(ex, istage, B, SYNC, PAR);
+
 
 
