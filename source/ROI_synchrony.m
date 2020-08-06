@@ -30,11 +30,18 @@ end
 
 dim = 1;
 h = waitbar(0,'Shuffling data');
-
+Bidxs = local_idxs_of_ones(B);
 for ishuff = 1:Nshuffle
     waitbar(ishuff/Nshuffle)
-    SHM = matrix_shuffle(B, dim, rule);
+    SHM = matrix_shuffle(B, dim, rule, Bidxs);
     SYNC_shuffled(ishuff,:) = peak_synchrony(SHM, samp_window);
 end
 close(h);
 SYNC_real = peak_synchrony(B, samp_window);
+
+
+function b = local_idxs_of_ones(B);
+for ib = 1:numel(B(:,1))
+    [~,b{ib}] = find(B(ib,:));
+
+end
