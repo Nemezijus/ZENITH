@@ -16,23 +16,24 @@ function [reM, time, onoff] = generate_network_spikes(ex, istage)
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
 
-
-% Part 1: downsampling if needed + stiching
+load('C:\Users\nagy.dominika\Desktop\github\ZENITH\utils\MLs_PARS.mat')
 reM = [];
-refmx = ex.restun{istage};
+% refmx = ex.restun{istage};
 for iroi =1:ex.N_roi
     disp(['Processing ROI_', num2str(iroi)]);
-    MM = [];
-    for irep = 1:ex.N_reps(istage)
-        [~, rearranged] = sort(refmx(:,irep));
-        [M, ~, ~, fs] = downsampling_ca(1, ex, iroi, istage, 0, irep);
-        M = M(rearranged,:);
-        for istim = 1:ex.N_stim(istage)
-            MM = [MM, M(istim,:)];
-        end
-    end
-    spM = export_spikes_woopsi(MM, fs);
-    reM = [reM; spM];
+%     MM = [];
+%     for irep = 1:ex.N_reps(istage)
+%         [~, rearranged] = sort(refmx(:,irep));
+%         M = downsampling_ca(1, ex, iroi, istage, 0, irep);
+%         M = M(rearranged,:);
+%         for istim = 1:ex.N_stim(istage)
+%             MM = [MM, M(istim,:)];
+%         end
+%     end
+    %spM = export_spikes_woopsi(MM, fs);
+    roi_stitched = ex.stitch(iroi, istage, 'dff');
+    [~, spikes_ML] = export_MLspikes(roi_stitched, par);
+    reM = [reM; spikes_ML'];
 end
 [~, time, onoff] = downsampling_ca(1,ex, iroi, istage, 1, 1);
 
