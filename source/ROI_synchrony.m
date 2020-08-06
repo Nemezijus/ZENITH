@@ -27,7 +27,9 @@ end
 if nargin < 2
     Nshuffle = 1000;
 end
-
+figure;
+plot(peak_synchrony(B, samp_window),'k-');hold on
+pl = plot(peak_synchrony(B, samp_window));
 dim = 1;
 h = waitbar(0,'Shuffling data');
 Bidxs = local_idxs_of_ones(B);
@@ -35,6 +37,9 @@ for ishuff = 1:Nshuffle
     waitbar(ishuff/Nshuffle)
     SHM = matrix_shuffle(B, dim, rule, Bidxs);
     SYNC_shuffled(ishuff,:) = peak_synchrony(SHM, samp_window);
+    delete(pl);
+    pl = plot(SYNC_shuffled(ishuff,:),'r-');
+    drawnow
 end
 close(h);
 SYNC_real = peak_synchrony(B, samp_window);
