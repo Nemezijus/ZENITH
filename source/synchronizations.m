@@ -40,8 +40,8 @@ if PAR.treat_artifacts
     end
     M = treat_artifacts(M, PAR.nstart, period);
 end
-B = probability_to_binary(M, PAR.sd_thr, PAR.normalize);
-% B = discreet_to_binary(M);
+% B = probability_to_binary(M, PAR.sd_thr, PAR.normalize);
+B = discreet_to_binary(M);
 
 [SYNC, SYNC_shuffled] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
 
