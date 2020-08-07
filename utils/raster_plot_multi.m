@@ -1,29 +1,31 @@
-function raster_plot_multi(ex, M, T, onoff, SYNC_real, p_thr)
+function raster_plot_multi(ex, B, T, onoff, SYNC_real, p_thr)
 % raster_plot_multi(ncell, iroi, istage, istim) - creats raster plots of
 % single cell or the complete cell population
 %
 %   INPUTS:
 %       ex - experiment object
-%       M - giga network spikeprob matrix
+%       B - giga network BINARY matrix
 %       T - the short fragment of time stamp which belongs to one rep
 %       onoff - starting and ending positions of visual stimulus window
-%       SYNC_real -
-%       p_thr - 
+%       SYNC_real - synchronization vector of real data M
+%       p_thr - number of synchronizations threshold below which
+%               synchronizations happen by chance
+%       
 %
 %   OUTPUTS:
 %
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
 
-if numel(unique(M))>2
-    % BINARIZATION
-    B = probability_to_binary(M);
-else
-    B = M;
-end
+% if numel(unique(M))>2
+%     % BINARIZATION
+%     B = probability_to_binary(M);
+% else
+%     B = M;
+% end
 
 % "STITCHING" TIME TOGETHER (in min)
-minute_multiplier = 1e-3;
+% minute_multiplier = 1e-3;
 start = T(1);
 stop = T(end)*ex.N_stim(1)*ex.N_reps(1);
 stepsize = numel(T);
@@ -38,7 +40,6 @@ AX1.Position([2,4]) = [AX1.Position(2) + 0.15 AX1.Position(4) - 0.15];
 AX2.Position = ax_refpos;
 AX2.Position(4) = 0.15;
 axes(AX1)
-%         Time = 1:size(B,2);
 for im = 0:numel(B(:,1))-1
     spikes = B(im+1,:);
     spikes(spikes == 0) = NaN;
@@ -68,7 +69,6 @@ y1 = [y1(1), y1(1), y1(2), y1(2)];
 y2 = [y2(1), y2(1), y2(2), y2(2)];
 timeStamps = [];
 for istart = onoff(1):stepsize:numel(Time(1,:))
-    %             istart
     x = [Time(istart), Time(istart+onoffstep), Time(istart+onoffstep), Time(istart)];
     p1(istart) = patch(AX1, x, y1, color, 'FaceAlpha', 0.5);
     p2(istart) = patch(AX2, x, y2, color, 'FaceAlpha', 0.5);
@@ -77,6 +77,7 @@ for istart = onoff(1):stepsize:numel(Time(1,:))
     timestamp = x(1);
     timeStamps = [timeStamps, timestamp];
 end
+linkaxes([AX1, AX2], 'x');
 
 % X AXIS
 [stim_order_v] = export_stimulus_order(ex.restun{1});
@@ -86,7 +87,6 @@ AX2.XTickLabel = num2cell(stim_order_v(1:end));
 AX2.XTickLabelRotation = 90;
 AX1.FontSize = 5;
 AX2.FontSize = 5;
-%         set(AX1, 'TickLength', [0 0]);
 AX1.XTick = [];
 set(AX2, 'TickLength', [0 0]);
 
@@ -97,10 +97,3 @@ AX2.YLabel.String = 'co-cells';
 AX2.YLabel.FontSize = 8;
 AX2.XLabel.String = 'time, ms';
 AX2.XLabel.FontSize = 8;
-
-
-
-
-
-
-

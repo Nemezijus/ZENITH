@@ -1,9 +1,9 @@
-function plot_networkactivity(ex, istage, B, SYNC_real, PAR)
+function [STIMSAMP] = plot_networkactivity(ex, istage, B, SYNC_real, PAR)
 % plot_networkactivity(ex, B, PAR) plots the raster plot of network
 % activity responses to visual stimuli (top) with a temporal histogram
 % (bottom) representing coactive cells over time
 %
-% PREREQUISITES:
+%   PREREQUISITES:
 %       Step 1 - load spike-probability matrix M
 %       Step 2 - adjust PAR(ameters) if needed --> PAR.Nrecs can vary,
 %       which is calculated from ex.N_stim(istage)*ex.N_reps(istage) where
@@ -11,15 +11,15 @@ function plot_networkactivity(ex, istage, B, SYNC_real, PAR)
 %       Step 3 - run [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR);
 %       Step 4 - update PAR with Pcutoff 
 %
-% INPUTS:
+%   INPUTS:
 %       ex
 %       istage
 %       B
 %       SYNC_real
 %       PAR
 %       
-% OUTPUTS:
-%       
+%   OUTPUTS:
+%       STIMSAMP - struct containing stimulus timing related informations
 %       
 %Part of ZENITH utils
 %Replacing rater_plot_multi 
@@ -38,3 +38,8 @@ end
 
 [~, t_ref, onoff, ~] = downsampling_ca(1, ex, 1, istage, 1, 1);
 raster_plot_multi(ex, B, t_ref, onoff, SYNC_real, PAR.pcutoff);
+
+STIMSAMP.full_s = numel(t_ref);
+STIMSAMP.full_xl = numel(SYNC_real);
+STIMSAMP.stim_on = onoff(1);
+STIMSAMP.stim_off = onoff(2);
