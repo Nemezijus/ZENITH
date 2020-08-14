@@ -15,7 +15,7 @@ function [SYNC_real, SYNC_shuffled] = ROI_synchrony(B, Nshuffle, rule, samp_wind
 %       SYNC_shuffled - synchronization matrix of shuffled B data
 %
 %Part of ZENITH source
-
+toplot = 0;
 if nargin < 4
     samp_window = 3;
 end
@@ -27,9 +27,11 @@ end
 if nargin < 2
     Nshuffle = 1000;
 end
-figure;
-plot(peak_synchrony(B, samp_window),'k-');hold on
-pl = plot(peak_synchrony(B, samp_window));
+if toplot
+    figure;
+    plot(peak_synchrony(B, samp_window),'k-');hold on
+    pl = plot(peak_synchrony(B, samp_window));
+end
 dim = 1;
 h = waitbar(0,'Shuffling data');
 Bidxs = local_idxs_of_ones(B);
@@ -37,9 +39,11 @@ for ishuff = 1:Nshuffle
     waitbar(ishuff/Nshuffle)
     SHM = matrix_shuffle(B, dim, rule, Bidxs);
     SYNC_shuffled(ishuff,:) = peak_synchrony(SHM, samp_window);
-    delete(pl);
-    pl = plot(SYNC_shuffled(ishuff,:),'r-');
-    drawnow
+    if toplot
+        delete(pl);
+        pl = plot(SYNC_shuffled(ishuff,:),'r-');
+        drawnow
+    end
 end
 close(h);
 SYNC_real = peak_synchrony(B, samp_window);
