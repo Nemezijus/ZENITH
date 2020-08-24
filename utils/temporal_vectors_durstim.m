@@ -26,7 +26,7 @@ for m = 1:numel(samples)
             samples_stim = [samples_stim, samples(m)];
             samples_stim_num = [samples_stim_num, n];
             break
-        end 
+        end
     end
 end
 STIMSAMP.samps = samples_stim;
@@ -45,19 +45,25 @@ for ivec = 1:size(TVstim, 2)
     coact_cells{2,ivec} = samples_stim_num(ivec);
 end
 % Create struct of coactive cell pools per stimuli window
-dunistims = (diff([coact_cells{2,:}]) > 0);
-dunistims(end+1) = 0;
-stim_shift_idx = signif_vectors(logical(dunistims))+1;
 unistims = unique(samples_stim_num);
-unistim_cellpools(1).stim_num = unistims(1);
-unistim_cellpools(1).stim_id = slist(unistims(1));
-unistim_cellpools(1).coactive_cells = unique([coact_cells{1,1:stim_shift_idx(1)-1}]);
-for n = 2:numel(stim_shift_idx)
-    unistim_cellpools(n).stim_num = unistims(n);
-    unistim_cellpools(n).stim_id = slist(unistims(n));
-    if n == numel(stim_shift_idx)
-        unistim_cellpools(n).coactive_cells = unique([coact_cells{1,stim_shift_idx(n):end}]);
-        break
+if numel(unistims)
+    unistim_cellpools(1).stim_num = unistims(1);
+    unistim_cellpools(1).stim_id = slist(unistims(1));
+    unistim_cellpools(1).coactive_cells = unique([coact_cells{1,:}]);
+else
+    dunistims = (diff([coact_cells{2,:}]) > 0);
+    dunistims(end+1) = 0;
+    stim_shift_idx = signif_vectors(logical(dunistims))+1;
+    unistim_cellpools(1).stim_num = unistims(1);
+    unistim_cellpools(1).stim_id = slist(unistims(1));
+    unistim_cellpools(1).coactive_cells = unique([coact_cells{1,1:stim_shift_idx(1)-1}]);
+    for n = 2:numel(stim_shift_idx)
+        unistim_cellpools(n).stim_num = unistims(n);
+        unistim_cellpools(n).stim_id = slist(unistims(n));
+        if n == numel(stim_shift_idx)
+            unistim_cellpools(n).coactive_cells = unique([coact_cells{1,stim_shift_idx(n):end}]);
+            break
+        end
+        unistim_cellpools(n).coactive_cells = unique([coact_cells{1,stim_shift_idx(n):stim_shift_idx(n+1)-1}]);
     end
-    unistim_cellpools(n).coactive_cells = unique([coact_cells{1,stim_shift_idx(n):stim_shift_idx(n+1)-1}]);
 end

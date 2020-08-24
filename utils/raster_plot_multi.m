@@ -89,11 +89,15 @@ AX1.FontSize = 5;
 AX2.FontSize = 5;
 AX1.XTick = [];
 set(AX2, 'TickLength', [0 0]);
+% AX1.XLim = [0 2700000];
+AX1.XLim = [0 1800000];
+
 
 % AXIS INSCRIPTIONS
 AX1.YLabel.String = 'active cell #';
 AX1.YLabel.FontSize = 8;
-AX2.YLabel.String = 'co-cells';
+% AX2.YLabel.String = 'co-cells';
+AX2.YLabel.String ='cell activity intensity';
 AX2.YLabel.FontSize = 8;
 AX2.XLabel.String = 'time, ms';
 AX2.XLabel.FontSize = 8;

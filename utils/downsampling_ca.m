@@ -54,12 +54,13 @@ for irow = 1:size(W.data,1)
 end
 
 % Stimuli export
-h5floc = 'N:\DATA\Betanitas\!Mouse Gramophon\2_Imaging\group30\30A1 (112, Máté)\Other\m30A_1.h5';
+% h5floc = 'N:\DATA\Betanitas\!Mouse Gramophon\2_Imaging\group30\30A1 (112, Máté)\Other\m30A_1.h5';
+
 % h5 attribute readout
 dataroot = ['/',ex.paths{2,1}];
 STAGEstr = [ex.paths{2,2}, num2str(istage)];
 loc = strjoin({dataroot, STAGEstr},'/');
-stimtype = h5readatt(h5floc, loc, 'STIMTYPE');
+stimtype = h5readatt(ex.file_loc, loc, 'STIMTYPE');
 % visc - finer details
 stime = visc_recall_stims(stimtype);
 

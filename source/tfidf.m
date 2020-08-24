@@ -28,9 +28,8 @@ function [TFIDF] = tfidf(TVstim)
 
 TFIDF = zeros(size(TVstim)); % 1 x numel(significant_vectors)
 for isv = 1:size(TVstim,2)
-%     tf = sum(TVstim(:,isv))/numel(TVstim(:,isv));
-    tf = 1/sum(TVstim(:,isv));
     for iroi = 1:size(TVstim,1)
+        tf = TVstim(iroi, isv)/sum(TVstim(:,isv));
         idf = log10(numel(TVstim(iroi,:))/sum(TVstim(iroi,:))) + 1;
         if isinf(idf)
             idf = 0;

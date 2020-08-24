@@ -1,4 +1,4 @@
-function [reM, time, onoff] = generate_network_spikes(ex, istage)
+function [reM, time, onoff] = generate_network_spikes(ex, istage, par)
 % [M, time, onoff] = generate_network_spikes(ex, istage) - creates a matrix with 
 % [nroi x nstims*nreps*nsamples] dimensions, where the columns contain the
 % stitched spike probabilities. As the process is time consuming, we save
@@ -16,7 +16,14 @@ function [reM, time, onoff] = generate_network_spikes(ex, istage)
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
 
-load('C:\Users\nagy.dominika\Desktop\github\ZENITH\utils\MLs_PARS.mat')
+if nargin < 3
+    loc = [mfilename('fullpath'),'.m'];%path to this HUB file
+    loc = strsplit(loc,'\');
+    loc = loc(1:end-2);
+    PARloc = strjoin({loc{:},'utils','MLs_PARS.mat'},'\');
+    load(PARloc);
+end
+
 reM = [];
 % refmx = ex.restun{istage};
 for iroi =1:ex.N_roi

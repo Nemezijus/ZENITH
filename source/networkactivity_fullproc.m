@@ -1,20 +1,28 @@
-function networkactivity_fullproc(ex, istage, M, PAR)
+function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP] = networkactivity_fullproc(ex, istage, M, PAR)
 % networkactivity_fullproc(ex, PAR) is a script which runs each steps of
 % network activity evaluation leading leading to its visualization
 %
-% PREREQUISITE(S):
+%   PREREQUISITE(S):
 %       Step 1 - load stored spike probability matrix M (so far it stays as
-%       a prerequisite as generating these matrices are apriori tasks,
-%       where user stores it is not consistent yet)
+%               a prerequisite as generating these matrices are apriori tasks,
+%               where user stores it is not consistent yet)
 %
-% INPUTS:
+%   INPUTS:
 %       ex - experiment object storing all useful data regarding experiment
 %       istage - user must define which stage of the experiment we are
-%       dealing with
+%               dealing with
 %       M - matrix containing spike probabilities of all rois of the
-%       defined stage
+%           defined stage
 %       PAR - struct containing essential parameters for running the
-%       network activity evaluation
+%           network activity evaluation
+% 
+%   OUTPUTS:
+%       SYNC - synchronization vector of real data M
+%       Pcutoff - number of synchronizations threshold below which
+%               synchronizations happen by chance
+%       B - the binary spike matrix
+%       STIMSAMP  - struct containing the sampsize of a single trace, and
+%               the on- and offset of vistim 
 %
 %Part of ZENITH
 
@@ -38,7 +46,8 @@ end
 PAR.pcutoff = Pcutoff;
 
 % visualize
-plot_networkactivity(ex, istage, B, SYNC, PAR);
+STIMSAMP = plot_networkactivity(ex, istage, B, SYNC, PAR);
+
 
 
 
