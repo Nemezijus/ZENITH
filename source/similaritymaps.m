@@ -1,4 +1,4 @@
-function [smap, scmap] = similaritymaps(TFIDF)
+function [SMAP, scmap] = similaritymaps(TFIDF)
 % [] = similaritymaps(TFIDF) calculates the similarity indices between all
 % possible vector pairs taken from the tf*idf normalized matrix
 %
@@ -25,6 +25,9 @@ for ivec = 1:sn-1
         smap(ivec,n) = si;
     end
 end
+
+SMAP = smap' + smap;
+SMAP(1:size(SMAP,1)+1:end) = diag(smap);
 
 if nargout == 2
     for irun = 1:sn-1

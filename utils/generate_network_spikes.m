@@ -39,7 +39,7 @@ for iroi =1:ex.N_roi
 %     end
     %spM = export_spikes_woopsi(MM, fs);
     roi_stitched = ex.stitch(iroi, istage, 'dff');
-    [~, spikes_ML] = export_MLspikes(roi_stitched, par);
+    [spikes_ML] = export_MLspikes(roi_stitched, par);
     reM = [reM; spikes_ML'];
 end
 [~, time, onoff] = downsampling_ca(1,ex, iroi, istage, 1, 1);

@@ -1,4 +1,4 @@
-function [Ffit, n] = export_MLspikes(roi_stitched, par)
+function [n] = export_MLspikes(roi_stitched, par)
 % [Ffit, spikes] = export_MLspikes(roi_stitched, par) exports MLspike data
 %
 % INPUTS:
@@ -34,4 +34,4 @@ par.dt = (roi_stitched.time(2)-roi_stitched.time(1)) * 1e-3; %0.0323;
 % par.a = 0.5;
 % par.tau = 0.6;
 ca_stitched = roi_stitched.data;
-[n, Ffit, par, LL, xest, drift] = tps_mlspikes(ca_stitched', par);
+[n] = tps_mlspikes(ca_stitched', par);
