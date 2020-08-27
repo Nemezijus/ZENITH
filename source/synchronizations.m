@@ -1,4 +1,4 @@
-function [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR)
+function [SYNC, Pcutoff, B, SYNC_shuffled, SH] = synchronizations(M,PAR)
 % [SYNC, Pcutoff] = synchronizations(M,PAR) - coagulates analysis
 % methods to convert spiking probability matrix M into Synchornization
 % vector and significance threshold
@@ -24,6 +24,9 @@ function [SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR)
 %       Pcutoff - number of synchronizations threshold below which
 %               synchronizations happen by chance
 %       B - the binary spike matrix
+%       SH - N dimensional matrix of data shuffles
+%
+%part of ZENITH
 
 if nargin < 2
     loc = [mfilename('fullpath'),'.m'];%path to this HUB file
@@ -43,7 +46,7 @@ end
 % B = probability_to_binary(M, PAR.sd_thr, PAR.normalize);
 B = discreet_to_binary(M);
 
-[SYNC, SYNC_shuffled] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
+[SYNC, SYNC_shuffled, SH] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
 
 Pcutoff = gauss_fit_on_shuffles(SYNC_shuffled, PAR.pval);
 % Pcutoff = pval_teststat(SYNC_shuffled, PAR.pval);
