@@ -1,4 +1,4 @@
-function [si] = norminprod(a, b)
+function [si, inprod] = norminprod(a, b)
 % [scoef] = norminprod(a, b) calculates the similarity index between
 % pairs of vectors by their normalized inner product, which represents the
 % cosine of the angles between two vectors
@@ -12,4 +12,5 @@ function [si] = norminprod(a, b)
 %
 %Part of ZENITH methods
 
-si = dot(a,b)/(norm(a)*norm(b));
+inprod = sum(a .* b);
+si = inprod/(norm(a)*norm(b));
