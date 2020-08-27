@@ -44,7 +44,7 @@ fprintf('\n');
 fprintf('STEP 4 - SIMILARITY MATRIX ESTIMATION\n');
 fprintf('\n');
 P = 5;
-fprintf(['Performing ',num2str(PAR.Nshffle),' shuffles across columns\n']);
+fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
 t = tic;
 [thr, SMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
 toc;
