@@ -26,7 +26,7 @@ function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_full
 %
 %Part of ZENITH
 
-if nargin < 3
+if nargin < 4
     loc = [mfilename('fullpath'),'.m'];%path to this HUB file
     loc = strsplit(loc,'\');
     loc = loc(1:end-2);

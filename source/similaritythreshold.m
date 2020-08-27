@@ -29,7 +29,6 @@ end
 
 %SHUFFLED
 max_nco = zeros(Nshuff, 1);
-tic
 for n = 1:Nshuff
     sh = shuffle_time_frames(M);
     [~, ~, cv_] = similaritymaps(sh);
@@ -39,7 +38,6 @@ for n = 1:Nshuff
 %     PD_SH = [PD_SH; pd_shuffled ./ numel(pd_shuffled)];
     max_nco(n) = max_cv_; 
 end
-toc
 thr = prctile(max_nco, prc);
 
 %REAL
