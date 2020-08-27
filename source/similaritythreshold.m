@@ -27,13 +27,42 @@ if nargin < 2
     fitype = 'Normal';
 end
 
-sh = shuffle_time_frames(M);
+x = 0.1:0.1:0.9;
+%Real
 SMAP = similaritymaps(M);
-SMAP_shuffled = similaritymaps(sh);
-
 pd = fitdist(SMAP(:), fitype);
-pd_sh = fitdist(SMAP_shuffled(:), fitype);
+pd_real = pdf(pd, x);
+%Shuffled
+% h1 = histfit(SMAP(:), numel(unique(SMAP(:))));
+PD_SH = [];
+tic
+for n = 1:1000
+    sh = shuffle_time_frames(M);
+    SMAP_shuffled = similaritymaps(sh);
+    max_sh = max(max(SMAP_shuffled));
+%     pd_sh = fitdist(SMAP_shuffled(:), fitype);
+%     pd_shuffled = pdf(pd_sh, x);
+%     PD_SH = [PD_SH; pd_shuffled ./ numel(pd_shuffled)];
+    PD_SH = [PD_SH; max_sh];
+end
+toc
+% PD_SH already normalized!
+% m_pdsh = mean(PD_SH);
+% sd_pdsh = std(PD_SH);
+% err = sd_pdsh .* ones(size(x));
+pd_sh = fitdist(PD_SH, fitype);
 thr = icdf(pd_sh, 1-pval);
+
+% figure;
+% plot(x, log10(m_pdsh), 'ko--');
+% hold on
+% plot(x, log10(m_pdsh+sd_pdsh), 'k*--');
+% plot(x, log10(m_pdsh-sd_pdsh), 'k*--');
+% errorbar(x, log10(m_pdsh), log10(err), 'vertical','LineStyle', 'none', 'Color', 'k' );
+% plot(x, log10(pd_real), 'k^-');
+% pd = fitdist(SMAP(:), fitype);
+
+% thr = icdf(m_pdsh, 1-pval);
 
 if toplot
     f = figure;
