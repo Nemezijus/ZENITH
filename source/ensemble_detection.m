@@ -46,7 +46,7 @@ fprintf('\n');
 P = 5;
 fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
 tic;
-[thr, SMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
+[thr, SMAP_real, COMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
 t = toc;
 fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
@@ -55,9 +55,9 @@ fprintf('\n');
 
 fprintf('STEP 5 - THRESHOLDING SIMILARITY MATRIX\n');
 fprintf('\n');
-thr = 0.35; %HARDCODED - needs to come out from STEP 4 properly
+
 tic
-B = similarities_to_binary(SMAP_real, thr);
+B = similarities_to_binary(SMAP_real, COMAP_real, thr);
 t = toc;
 fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
 figure;imagesc(B);
