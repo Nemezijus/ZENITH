@@ -18,6 +18,9 @@ function [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF)
 
 sn = size(TFIDF,2);
 smap = zeros(sn);
+if nargout == 4
+    cmap = zeros(sn);
+end
 count = 1;
 
 for ivec = 1:sn-1
