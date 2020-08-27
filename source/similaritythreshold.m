@@ -1,4 +1,4 @@
-function [thr, SMAP_real] = similaritythreshold(M, Nshuff, prc, toplot)
+function [thr, SMAP_real, COMAP_real] = similaritythreshold(M, Nshuff, prc, toplot)
 % [thr, SMAP, SMAP_shuffled] = similaritythreshold(M, Nshuff, prc, toplot) 
 % calculates the significance threshold based on the similarity
 % coefficients and optionally plots probability distributions of similarities
@@ -44,7 +44,7 @@ close(hb);
 thr = prctile(max_nco, prc);
 
 %REAL
-[SMAP_real, sv_real, cv_real] = similaritymaps(M);
+[SMAP_real, sv_real, cv_real, COMAP_real] = similaritymaps(M);
 
 if toplot
     f = figure;
