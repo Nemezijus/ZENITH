@@ -1,4 +1,4 @@
-function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP] = networkactivity_fullproc(ex, istage, M, PAR)
+function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_fullproc(ex, istage, M, PAR)
 % networkactivity_fullproc(ex, PAR) is a script which runs each steps of
 % network activity evaluation leading leading to its visualization
 %
