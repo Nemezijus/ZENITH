@@ -1,4 +1,4 @@
-function [thr, SMAP_real] = ensemble_detection(ex,M,istage)
+function [B,s,S,V] = ensemble_detection(ex,M,istage)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -51,3 +51,24 @@ t = toc;
 fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 fprintf(['Maximum number of coactive cells occuring by chance is: ',num2str(thr),'\n']);
+fprintf('\n');
+
+fprintf('STEP 5 - THRESHOLDING SIMILARITY MATRIX\n');
+fprintf('\n');
+thr = 0.35; %HARDCODED - needs to come out from STEP 4 properly
+tic
+B = similarities_to_binary(SMAP_real, thr);
+t = toc;
+fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
+figure;imagesc(B);
+title('Thresholded similarity matrix');
+fprintf('\n');
+
+fprintf('STEP 6 - ESTIMATING SVD\n');
+fprintf('\n');
+[s,S,V] = svd_components(B);
+
+
+
+
+
