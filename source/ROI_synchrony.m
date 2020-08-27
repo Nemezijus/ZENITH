@@ -37,11 +37,15 @@ dim = 1;
 h = waitbar(0,'Shuffling data');
 Bidxs = local_idxs_of_ones(B);
 sz = size(B);
-SH = zeros(Nshuffle,sz(1),sz(2));
+if nargout == 3
+    SH = zeros(Nshuffle,sz(1),sz(2));
+end
 for ishuff = 1:Nshuffle
     waitbar(ishuff/Nshuffle)
     SHM = matrix_shuffle(B, dim, rule, Bidxs);
-    SH(ishuff,:,:) = SHM;
+    if nargout == 3
+        SH(ishuff,:,:) = SHM;
+    end
     SYNC_shuffled(ishuff,:) = peak_synchrony(SHM, samp_window);
     if toplot
         delete(pl);

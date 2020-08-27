@@ -46,7 +46,7 @@ end
 % B = probability_to_binary(M, PAR.sd_thr, PAR.normalize);
 B = discreet_to_binary(M);
 
-[SYNC, SYNC_shuffled, SH] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
+[SYNC, SYNC_shuffled] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
 
 Pcutoff = gauss_fit_on_shuffles(SYNC_shuffled, PAR.pval);
 % Pcutoff = pval_teststat(SYNC_shuffled, PAR.pval);
