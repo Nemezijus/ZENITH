@@ -10,7 +10,7 @@ function [ENS] = ensemble_decoding(SMred, TFIDF, STIMSAMP)
 %                   (population) vectors
 %
 %   OUTPUTS:
-%
+%       ENS - ENS(emble) struct containing info about detected ensembles
 %
 % See also
 % Part of ZENITH source
@@ -33,11 +33,11 @@ for n = 1:s(1)
             end
         end
     end
-    
+%Part3 - Create mask for population vectors    
 pv_idx = unique(pv_idx);
 pv_mask = logical(zeros(1,s(2)));
 pv_mask(pv_idx) = 1;
-
+%Part4 - Fill up ENSemble struct
 ENS(n).pv = TFIDF(:,pv_mask);
 ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
 ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
