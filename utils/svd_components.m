@@ -17,7 +17,7 @@ function [redB,s,S,U,V] = svd_components(B)
 %       V - right unitary matrix of orthonormal bases
 %
 %part of ZENITH
-s = [];
+toplot = 1;
 [U,S,V] = svd(B);
 
 
@@ -38,7 +38,31 @@ end
 
 N = 6;
 
-
 for in = 1:N
     redB(in,:,:) = s(in).*U(:,in)*V(:,in)';
+end
+
+
+if toplot
+    F = figure;
+    set(F,'units', 'normalized', 'position', [0.0995 0.0954 0.81 0.75])
+
+    AX1 = autoaxes(F,2,1,[0.05 0.75, 0.05 0.05], [0, 0.05]);
+    AX2 = autoaxes(F,2,ceil(N/2),[0.25 0.025 0.05 0.05],[0.025,0.05]);
+    
+    axes(AX1(1));
+    imagesc(B);
+    title('full activation matrix');
+    axes(AX1(2));
+    plot(s,'k-','linew',2);
+    ylabel('magnitude');
+    xlabel('index');
+    set(AX1(2),'xscale','log');
+    xlim([1,30]);
+    for in = 1:N
+        axes(AX2(in));
+        m(:,:) = redB(in,:,:);
+        imagesc(m);
+        title(['component ',num2str(in)]);
+    end
 end

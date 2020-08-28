@@ -25,7 +25,7 @@ tic;
 [TV, TVred, samples] = temporal_vectors(B, SYNC, Pcutoff, PAR);
 c_restun = ex.restun{istage};
 slist = export_stimulus_order(c_restun);
-[unistim_cellpools, TV, TVstim, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+[TVstim, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
 t = toc;
 fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
