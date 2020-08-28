@@ -34,7 +34,7 @@ if sum(sum(b)) == numel(B)
 else
     fprintf('svd decomposition does not reproduce binary matrix\n');
 end
-
+clear BB
 
 N = 6;
 
@@ -42,7 +42,20 @@ for in = 1:N
     redB(in,:,:) = s(in).*U(:,in)*V(:,in)';
 end
 
+%binarize the redB components
+Nseq = 1:N;
+for in = 1:N
+    cB(:,:) = redB(in,:,:);
+    remN = setdiff(Nseq,in);
+    D = ones(size(cB)).*B;
+    for in2 = remN
+        ccB(:,:) = redB(in2,:,:);
+        D = D.*(cB>ccB);
+    end
+    new_redB(in,:,:) = D;
+end
 
+redB = new_redB;
 if toplot
     F = figure;
     set(F,'units', 'normalized', 'position', [0.0995 0.0954 0.81 0.75])
