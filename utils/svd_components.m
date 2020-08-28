@@ -1,4 +1,4 @@
-function [s,S,V] = svd_components(B)
+function [s,S,U,V] = svd_components(B)
 % [s,S,V] = svd_components(B) - performs singular value decomposition on
 % the binary matrix B and returns the significant singlar values which
 % represent distinct clusters
@@ -14,6 +14,13 @@ function [s,S,V] = svd_components(B)
 %       V - unitary matrix of orthonormal bases
 %
 %part of ZENITH
-
+s = [];
 [U,S,V] = svd(B);
+
+
+s = diag(S);
+BB = zeros(size(B));
+for is = 1:numel(s)
+    BB = BB+s(is).*U(:,is)*V(:,is)';
+end
 a=1;

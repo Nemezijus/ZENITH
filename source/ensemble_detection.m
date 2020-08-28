@@ -1,4 +1,4 @@
-function [B,s,S,V] = ensemble_detection(ex,M,istage)
+function [B,s,S,U,V] = ensemble_detection(ex,M,istage)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -66,7 +66,7 @@ fprintf('\n');
 
 fprintf('STEP 6 - ESTIMATING SVD\n');
 fprintf('\n');
-[s,S,V] = svd_components(B);
+[s,S,U,V] = svd_components(B);
 
 
 
