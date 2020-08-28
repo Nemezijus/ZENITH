@@ -1,4 +1,4 @@
-function [B,s,S,U,V] = ensemble_detection(ex,M,istage)
+function [B,redB,s,TFIDF,STIMSAMP] = ensemble_detection(ex,M,istage)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -44,7 +44,7 @@ fprintf('\n');
 fprintf('STEP 4 - SIMILARITY MATRIX ESTIMATION\n');
 fprintf('\n');
 P = 5;
-fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
+% fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
 tic;
 [thr, SMAP_real, COMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
 t = toc;
@@ -66,7 +66,12 @@ fprintf('\n');
 
 fprintf('STEP 6 - ESTIMATING SVD\n');
 fprintf('\n');
-[s,S,U,V] = svd_components(B);
+tic
+[redB, s, S, U, V] = svd_components(B);
+t = toc;
+fprintf(['STEP 6 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('SVD PROCESSED. B COMPONENTS CALCULATED (6) \n');
+fprintf('\n');
 
 
 

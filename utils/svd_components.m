@@ -1,6 +1,6 @@
-function [s,S,U,V] = svd_components(B)
-% [s,S,V] = svd_components(B) - performs singular value decomposition on
-% the binary matrix B and returns the significant singlar values which
+function [redB,s,S,U,V] = svd_components(B)
+% [redB,s,S,U,V] = svd_components(B) - performs singular value decomposition on
+% the binary matrix B and returns the significant singular values which
 % represent distinct clusters
 %
 %   INPUT:
@@ -8,10 +8,13 @@ function [s,S,U,V] = svd_components(B)
 %       (TxT)
 %
 %   OTPUTS:
+%       redB - N dimensional matrix - decomposition of B. N = number of
+%               significant singular values
 %       s - reduced singular value matrix S diagonal containing onl
 %       significant singular values
 %       S - full singular valuue matrix
-%       V - unitary matrix of orthonormal bases
+%       U - left unitary matrix of orthinormal bases
+%       V - right unitary matrix of orthonormal bases
 %
 %part of ZENITH
 s = [];
@@ -19,8 +22,23 @@ s = [];
 
 
 s = diag(S);
+
+%check
 BB = zeros(size(B));
 for is = 1:numel(s)
     BB = BB+s(is).*U(:,is)*V(:,is)';
 end
-a=1;
+b = round(BB)==B;
+if sum(sum(b)) == numel(B)
+    fprintf('svd decomposition successful\n');
+else
+    fprintf('svd decomposition does not reproduce binary matrix\n');
+end
+
+
+N = 6;
+
+
+for in = 1:N
+    redB(in,:,:) = s(in).*U(:,in)*V(:,in)';
+end
