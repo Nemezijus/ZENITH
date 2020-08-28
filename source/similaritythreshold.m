@@ -27,7 +27,6 @@ if nargin < 2
     Nshuff = 1000;
 end
 
-%SHUFFLED
 max_nco = zeros(Nshuff, 1);
 hb = waitbar(0,'Shuffling, please wait!');
 for n = 1:Nshuff
@@ -43,7 +42,7 @@ end
 close(hb);
 thr = prctile(max_nco, prc);
 
-%REAL
+SMAP_shuffled = similaritymaps(sh);
 [SMAP_real, sv_real, cv_real, COMAP_real] = similaritymaps(M);
 
 if toplot
@@ -58,19 +57,19 @@ if toplot
 %     AX_l(1,1).YLabel.String = '';
     AX_l(1,1).Title.String = 'Similarity map of real data';
     
-%     axes(AX_l(2,1))
-%     imagesc(SMAP_shuffled);
-%     AX_l(2,1).Title.String = 'Similarity map of shuffled data';
+    axes(AX_l(2,1))
+    imagesc(SMAP_shuffled);
+    AX_l(2,1).Title.String = 'Similarity map of shuffled data';
     
     axes(AX_l(1,2))
     h1 = histfit(SMAP_real(:), numel(unique(SMAP_real(:))));
     ylim([0 20]);
     AX_l(1,2).Title.String = 'Histogram with gaussian fitting of real data';
     
-%     axes(AX_l(2,2))
-%     h2 = histfit(SMAP_shuffled(:), numel(unique(SMAP_shuffled(:))));
-%     ylim([0 20]);
-%     AX_l(2,2).Title.String = 'Histogram with gaussian fitting of shuffled data';
+    axes(AX_l(2,2))
+    h2 = histfit(SMAP_shuffled(:), numel(unique(SMAP_shuffled(:))));
+    ylim([0 20]);
+    AX_l(2,2).Title.String = 'Histogram with gaussian fitting of shuffled data';
     
     axes(AX_r(1))
 %     x = h1(2).XData;
