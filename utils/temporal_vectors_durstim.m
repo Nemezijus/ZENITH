@@ -1,40 +1,46 @@
 function [unistim_cellpools, TV, TVstim, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist)
-% [TVstim] = temporal_vectors_durstim() - creates
-% temporal vector binary matrix where each column represents time point and
-% every row - 1 or 0 - whether the ROI is coactive or not.
+% [[unistim_cellpools, TV, TVstim, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist) - 
+% in the first place creates a reduced binary matrix where each column represents time point and
+% every row whether the ROI is coactive or not - 1 or 0 -
 %
 %   INPUTS:
-%       TVred - Temporal Vector reduced matrix (all-0 columns eliminated)
+%       B - original binary matrix
 %       samples - time sample indices that contain significant syncronizations
-%
+%       STIMSAMP - struct containing info about stim on- and offsets and
+%                   the lenght of the bigger (full_xl) and base (full_s) 
+%                   time vectors
+%       slist - stimulus list vector defining the original order of stimuli
+%               during measurement
 %
 %   OUTPUTS:
-%       unistim_cellpools - struct
+%       unistim_cellpools - struct containing the info about coactive cells
+%                           during stimuli
 %       TV - Temporal Vector matrix
-%       TVstim - Temporal Vector matrix, reduced to during stim only
-%       STIMSAMP - struct
+%       TVstim - Temporal Vector matrix, reduced to during stim times only
+%       STIMSAMP - struct containg info helping in retracing significant
+%                   temporal vectors
 %
 %part of ZENITH
 
 ons = STIMSAMP.stim_on:STIMSAMP.full_s:STIMSAMP.full_xl;
 offs = STIMSAMP.stim_off:STIMSAMP.full_s:STIMSAMP.full_xl;
 
-samples_stim = []; samples_stim_num = [];
+samples_orig = []; samples_stim_num = [];
 for m = 1:numel(samples)
     for n = 1:numel(ons)
         if samples(m) >= ons(n) && samples(m) <= offs(n)
-            samples_stim = [samples_stim, samples(m)];
+            samples_orig = [samples_orig, samples(m)];
             samples_stim_num = [samples_stim_num, n];
             break
         end
     end
 end
-STIMSAMP.samps = samples_stim;
+STIMSAMP.samps_orig = samples_orig;
 STIMSAMP.samps_stimid = samples_stim_num;
 
 TV = zeros(size(B));
-TV(:,samples_stim) = B(:,samples_stim);
-TVstim = B(:,samples_stim);
+TV(:,samples_orig) = B(:,samples_orig);
+TVstim = B(:,samples_orig);
 
 coact_cells = {};
 cells = 1:size(B,1);

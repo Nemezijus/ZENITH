@@ -10,9 +10,6 @@ function raster_plot_multi(ex, B, T, onoff, SYNC_real, p_thr)
 %       SYNC_real - synchronization vector of real data M
 %       p_thr - number of synchronizations threshold below which
 %               synchronizations happen by chance
-%       
-%
-%   OUTPUTS:
 %
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
@@ -89,9 +86,11 @@ AX1.FontSize = 5;
 AX2.FontSize = 5;
 AX1.XTick = [];
 set(AX2, 'TickLength', [0 0]);
-% AX1.XLim = [0 2700000];
-AX1.XLim = [0 1800000];
-
+if strcmp(ex.setup, 'ao')
+    AX1.XLim = [0 2700000];
+else
+    AX1.XLim = [0 1800000];
+end
 
 % AXIS INSCRIPTIONS
 AX1.YLabel.String = 'active cell #';
