@@ -1,6 +1,8 @@
 function [ENS] = ensemble_decoding(SMred, TFIDF, STIMSAMP)
-% [] = ensemble_decoding(SM, redSM, TFIDF, STIMSAMP) -
-%
+% [ENS] = ensemble_decoding(SM, redSM, TFIDF, STIMSAMP) - remaps the participating 
+% significant temporal vectors based on the factorized binary matrices by
+% SVD (SMred) and generates the struct of neuronal ensembles to store the 
+% population vectors, their original sample numbers and the corresponding stimulus id
 %
 %   INPUTS:
 %       SM - Similarity Map Matrix (symmetric mx, rank: # population vectors)
@@ -12,7 +14,7 @@ function [ENS] = ensemble_decoding(SMred, TFIDF, STIMSAMP)
 %   OUTPUTS:
 %       ENS - ENS(emble) struct containing info about detected ensembles
 %
-% See also
+% See also ensemble_detection
 % Part of ZENITH source
 
 s = size(SMred);

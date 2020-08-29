@@ -1,6 +1,7 @@
 function [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF)
-% [] = similaritymaps(TFIDF) calculates the similarity indices between all
-% possible vector pairs taken from the tf*idf normalized matrix
+% [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF) - calculates 
+% the similarity indices between all possible vector pairs taken from
+% the tf*idf normalized matrix
 %
 %   INPUTS
 %       TFIDF - matrix containing tf*idf normalized significant vectors
@@ -15,14 +16,12 @@ function [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF)
 %
 %Part of ZENITH source
 
-
 sn = size(TFIDF,2);
 smap = zeros(sn);
 if nargout == 4
     cmap = zeros(sn);
 end
 count = 1;
-
 for ivec = 1:sn-1
     a = TFIDF(:,ivec); % reference vector
     bn = ivec+1:sn;
@@ -39,7 +38,6 @@ for ivec = 1:sn-1
         count = count + 1;
     end
 end
-
 SMAP = smap' + smap;
 SMAP(1:size(SMAP,1)+1:end) = diag(smap);
 
@@ -47,7 +45,6 @@ if nargout == 4
     COMAP = cmap' + cmap;
     COMAP(1:size(COMAP,1)+1:end) = diag(cmap);
 end
-
 if nargout == 5
     for irun = 1:sn-1
         c = irun + 1;

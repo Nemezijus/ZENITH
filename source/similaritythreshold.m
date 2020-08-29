@@ -1,6 +1,6 @@
 function [thr, SMAP_real, COMAP_real] = similaritythreshold(M, Nshuff, prc, toplot)
-% [thr, SMAP, SMAP_shuffled] = similaritythreshold(M, Nshuff, prc, toplot) 
-% calculates the significance threshold based on the similarity
+% [thr, SMAP, SMAP_shuffled] = similaritythreshold(M, Nshuff, prc, toplot)
+% - calculates the significance threshold based on the similarity
 % coefficients and optionally plots probability distributions of similarities
 %
 %   INPUTS:
@@ -34,14 +34,11 @@ for n = 1:Nshuff
     sh = shuffle_time_frames(M);
     [~, ~, cv_] = similaritymaps(sh);
     max_cv_ = max(cv_);
-%     pd_sh = fitdist(SMAP_shuffled(:), fitype);
-%     pd_shuffled = pdf(pd_sh, x);
-%     PD_SH = [PD_SH; pd_shuffled ./ numel(pd_shuffled)];
     max_nco(n) = max_cv_; 
 end
 close(hb);
-thr = prctile(max_nco, prc);
 
+thr = prctile(max_nco, prc);
 SMAP_shuffled = similaritymaps(sh);
 [SMAP_real, sv_real, cv_real, COMAP_real] = similaritymaps(M);
 
@@ -53,8 +50,6 @@ if toplot
     
     axes(AX_l(1,1))
     imagesc(SMAP_real);
-%     AX_l(1,1).XLabel.String = '';
-%     AX_l(1,1).YLabel.String = '';
     AX_l(1,1).Title.String = 'Similarity map of real data';
     
     axes(AX_l(2,1))
@@ -62,45 +57,19 @@ if toplot
     AX_l(2,1).Title.String = 'Similarity map of shuffled data';
     
     axes(AX_l(1,2))
-    h1 = histfit(SMAP_real(:), numel(unique(SMAP_real(:))));
+    histfit(SMAP_real(:), numel(unique(SMAP_real(:))));
     ylim([0 20]);
     AX_l(1,2).Title.String = 'Histogram with gaussian fitting of real data';
     
     axes(AX_l(2,2))
-    h2 = histfit(SMAP_shuffled(:), numel(unique(SMAP_shuffled(:))));
+    histfit(SMAP_shuffled(:), numel(unique(SMAP_shuffled(:))));
     ylim([0 20]);
     AX_l(2,2).Title.String = 'Histogram with gaussian fitting of shuffled data';
     
     axes(AX_r(1))
-%     x = h1(2).XData;
-%     pd_real = pdf(pd, x);
-%     pd_shuffled = pdf(pd_sh, x);
-%     plot(x, log10(pd_real), 'k-');
-%     hold on
-%     plot(x, log10(pd_shuffled), 'k--');
     plot(cv_real, sv_real, 'kx');
     hold on
     plot([thr thr], get(AX_r(1), 'YLim'), 'r', 'linew', 2);
     AX_r(1).Title.String = 'Probability distribution of similarity coefficients';
     
 end
-
-
-% old testing
-% pd = fitdist(SMAP(:), fitype);
-% pd_real = pdf(pd, x);
-% PD_SH already normalized!
-% m_pdsh = mean(PD_SH);
-% sd_pdsh = std(PD_SH);
-% err = sd_pdsh .* ones(size(x));
-% pd_sh = fitdist(PD_SH, fitype);
-% thr = icdf(pd_sh, 1-pval);
-% figure;
-% plot(x, log10(m_pdsh), 'ko--');
-% hold on
-% plot(x, log10(m_pdsh+sd_pdsh), 'k*--');
-% plot(x, log10(m_pdsh-sd_pdsh), 'k*--');
-% errorbar(x, log10(m_pdsh), log10(err), 'vertical','LineStyle', 'none', 'Color', 'k' );
-% plot(x, log10(pd_real), 'k^-');
-% pd = fitdist(SMAP(:), fitype);
-% thr = icdf(m_pdsh, 1-pval);

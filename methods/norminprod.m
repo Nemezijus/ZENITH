@@ -1,5 +1,5 @@
 function [si, inprod] = norminprod(a, b)
-% [scoef] = norminprod(a, b) calculates the similarity index between
+% [scoef] = norminprod(a, b) - calculates the similarity index between
 % pairs of vectors by their normalized inner product, which represents the
 % cosine of the angles between two vectors
 %
