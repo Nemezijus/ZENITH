@@ -7,7 +7,7 @@ function [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF)
 %       TFIDF - matrix containing tf*idf normalized significant vectors
 %
 %   OUTPUTS
-%       SMAP - similarity map containing the upper triangle of similarity
+%       SMAP - similarity map containing the symmetric of similarity
 %               indices
 %       svec - vector containing similarity indices
 %       cvev - vecotor containing maximum value of coactive cell numbers
@@ -18,7 +18,7 @@ function [SMAP, svec, cvec, COMAP, scmap] = similaritymaps(TFIDF)
 
 sn = size(TFIDF,2);
 smap = zeros(sn);
-if nargout == 4
+if nargout == 4 || nargout == 5
     cmap = zeros(sn);
 end
 count = 1;
@@ -27,12 +27,12 @@ for ivec = 1:sn-1
     bn = ivec+1:sn;
     for n = bn
         b = TFIDF(:,n); % pair vector
-        [si] = norminprod(a,b); %sim index + inner prod
-        co = sum(all([a,b],2));
-        cvec(count) = co; %because mx is not binary, else inprod would be ok
+        si = norminprod(a,b, 'old'); %sim index + inner prod
+        co = sum(all([a,b],2)); %because mx is not binary, else inprod would be ok
+        cvec(count) = co; 
         svec(count) = si;
         smap(ivec,n) = si;
-        if nargout == 4
+        if nargout == 4 || nargout == 5
             cmap(ivec,n) = co;
         end
         count = count + 1;
@@ -41,7 +41,7 @@ end
 SMAP = smap' + smap;
 SMAP(1:size(SMAP,1)+1:end) = diag(smap);
 
-if nargout == 4
+if nargout == 4 || nargout == 5
     COMAP = cmap' + cmap;
     COMAP(1:size(COMAP,1)+1:end) = diag(cmap);
 end
