@@ -32,15 +32,18 @@ hb = waitbar(0,'Shuffling, please wait!');
 for n = 1:Nshuff
     waitbar(n/Nshuff);
     sh = shuffle_time_frames(M);
-    [~, ~, cv_] = similaritymaps(sh);
+%     [~, ~, cv_] = similaritymaps(sh);
+    [~, ~, ~, cv_] = simmap(sh);
     max_cv_ = max(cv_);
     max_nco(n) = max_cv_; 
 end
 close(hb);
 
 thr = prctile(max_nco, prc);
-SMAP_shuffled = similaritymaps(sh);
-[SMAP_real, sv_real, cv_real, COMAP_real] = similaritymaps(M);
+% SMAP_shuffled = similaritymaps(sh);
+SMAP_shuffled = simmap(sh);
+% [SMAP_real, sv_real, cv_real, COMAP_real] = similaritymaps(M);
+[SMAP_real, COMAP_real, sv_real, cv_real] = simmap(M);
 
 if toplot
     f = figure;

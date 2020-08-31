@@ -1,5 +1,5 @@
 function [STIMSAMP] = plot_networkactivity(ex, istage, B, SYNC_real, PAR)
-% plot_networkactivity(ex, B, PAR) plots the raster plot of network
+% plot_networkactivity(ex, B, PAR) - plots the raster plot of network
 % activity responses to visual stimuli (top) with a temporal histogram
 % (bottom) representing coactive cells over time
 %
@@ -12,11 +12,11 @@ function [STIMSAMP] = plot_networkactivity(ex, istage, B, SYNC_real, PAR)
 %       Step 4 - update PAR with Pcutoff 
 %
 %   INPUTS:
-%       ex
-%       istage
-%       B
-%       SYNC_real
-%       PAR
+%       ex -
+%       istage -
+%       B -
+%       SYNC_real -
+%       PAR -
 %       
 %   OUTPUTS:
 %       STIMSAMP - struct containing stimulus timing related informations

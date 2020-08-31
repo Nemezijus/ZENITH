@@ -1,5 +1,5 @@
 function [stim_order_v] = export_stimulus_order(rest_ref_mx)
-% [stim_order_v] = export_stimulus_order(stim_ref_mx) returns the order of
+% [stim_order_v] = export_stimulus_order(stim_ref_mx) - returns the order of
 % visual stimuli during our experiments
 %
 % INPUT:

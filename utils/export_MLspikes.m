@@ -1,5 +1,5 @@
 function [n] = export_MLspikes(roi_stitched, par)
-% [Ffit, spikes] = export_MLspikes(roi_stitched, par) exports MLspike data
+% [Ffit, spikes] = export_MLspikes(roi_stitched, par) - exports MLspike data
 %
 % INPUTS:
 %       roi_stitched - full, stitched traces of calcium signal of a roi
