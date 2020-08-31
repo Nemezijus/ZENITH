@@ -1,9 +1,10 @@
-function TVens = ensemble_unpacking(redB)
+function [TVens, ROIids] = ensemble_unpacking(redB, TFIDF)
 % TVens = ensemble_unpacking(redB) - each ensemble in redB gets assigned
 % time vector indexing for the ensemle raster plot
 %
-%   INPUT:
+%   INPUTS:
 %       redB - time vector matrix, thresholded.
+%       TFIDF - tf-idf matrix
 %
 %   OUTPUT:
 %       TVens - cell array with each element containing indices of time
@@ -16,8 +17,19 @@ Nens = numel(redB(:,1,1));
 
 rast = zeros(sz(1),sz(2));
 for iens = 1:Nens
+    cells = [];
     cens(:,:) = redB(iens,:,:);
+    for irows = 1:sz(2)
+        cens(irows,1:irows) = 0;
+    end
     [a,b] = find(cens);
+    for ia = 1:numel(a)
+        va = TFIDF(:,a(ia));
+        vb = TFIDF(:,b(ia));
+        idxs = find(va.*vb);
+        cells = [cells,idxs'];
+    end
+    ROIids{iens} = unique(cells);
     una = unique(a);
     unb = unique(b);
     un = unique([una;unb]);

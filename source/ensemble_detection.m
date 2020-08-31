@@ -1,4 +1,4 @@
-function [B,redB,s,TFIDF,STIMSAMP, ENS] = ensemble_detection(ex,M,istage,saveloc)
+function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff] = ensemble_detection(ex,M,istage,saveloc)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -28,6 +28,7 @@ fprintf('STEP 1 - SYNCHRONIZATION ESTIMATES\n');
 fprintf('\n');
 tic;
 [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_fullproc(ex, istage, M);
+ras = B; %raster
 t = toc;
 if tosave
     saveas(gcf,[saveloc,'\1_raster_plot.fig']);
@@ -120,5 +121,32 @@ if tosave
 end
 
 fprintf(['STEP 7 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('\n');
 
+fprintf('STEP 8 - UNPACKING ENSEMBLES\n');
+fprintf('\n');
+tic;
+[TVens, ROIids] = ensemble_unpacking(redB, TFIDF);
+t = toc;
+if tosave
+    saveas(gcf,[saveloc,'\6_ensemble_vectors.fig']);
+    saveas(gcf,[saveloc,'\6_ensemble_vectors.png']);
+end
+
+fprintf(['STEP 8 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('\n');
+
+fprintf('STEP 9 - VISUALISING ENSEMBLES ON RASTER\n');
+fprintf('\n');
+tic;
+[F1,F2] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMP, SYNC, Pcutoff);
+t = toc;
+fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('\n');
+if tosave
+    saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
+    saveas(F1,[saveloc,'\7_ensemble_on_raster.png']);
+    saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
+    saveas(F2,[saveloc,'\8_ensemble_on_raster_individual.png']);
+end
 
