@@ -1,4 +1,4 @@
-function [TVstim, STIMSAMP, unistim_cellpools] = temporal_vectors_durstim(B, samples, STIMSAMP, slist)
+function [TVsignif, STIMSAMP, unistim_cellpools] = temporal_vectors_durstim(B, samples, STIMSAMP, slist)
 % [[unistim_cellpools, TV, TVstim, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist) -
 % in the first place creates a reduced binary matrix where each column represents time point and
 % every row whether the ROI is coactive or not - 1 or 0 -
@@ -31,25 +31,34 @@ for m = 1:numel(samples)
             samples_orig = [samples_orig, samples(m)];
             samples_stim_num = [samples_stim_num, n];
             break
+        elseif samples(m) < ons(n)
+            samples_orig =[samples_orig, samples(m)];
+            samples_stim_num = [samples_stim_num, -1];
+            break
         end
     end
 end
 STIMSAMP.samps_orig = samples_orig;
 STIMSAMP.samps_stimnum = samples_stim_num;
 for n = 1:numel(samples_stim_num)
-    STIMSAMP.samps_stimid(n) = slist(samples_stim_num(n));
+    if samples_stim_num(n) == -1
+        STIMSAMP.samps_stimid(n) = 666;
+    else
+        STIMSAMP.samps_stimid(n) = slist(samples_stim_num(n));
+    end
 end
 % TV = zeros(size(B));
 % TV(:,samples_orig) = B(:,samples_orig);
-TVstim = B(:,samples_orig);
+TVsignif = B(:,samples_orig);
 
+% This part is not refreshed yet!
 if nargout == 3
     % Create struct of coactive cell pools per stimuli window
     coact_cells = {};
     cells = 1:size(B,1);
-    signif_vectors = 1:size(TVstim, 2);
-    for ivec = 1:size(TVstim, 2)
-        cocell_mask = logical(TVstim(:,ivec));
+    signif_vectors = 1:size(TVsignif, 2);
+    for ivec = 1:size(TVsignif, 2)
+        cocell_mask = logical(TVsignif(:,ivec));
         coact_cells{1,ivec} = cells(cocell_mask);
         coact_cells{2,ivec} = samples_stim_num(ivec);
     end
