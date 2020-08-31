@@ -1,4 +1,4 @@
-function [B,redB,s,TFIDF,STIMSAMP, ENS] = ensemble_detection(ex,M,istage)
+function [B,redB,s,TFIDF,STIMSAMP, ENS] = ensemble_detection(ex,M,istage,saveloc)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -6,14 +6,33 @@ function [B,redB,s,TFIDF,STIMSAMP, ENS] = ensemble_detection(ex,M,istage)
 %       ex - experiment object
 %       M - spiking matrix
 %       istage - stage identifier
+%       saveloc - location to store figures. If none specified no saving
+%               happens
 %
 %part of ZENITH
+if nargin < 4
+    tosave = 0;
+else
+    tosave = 1;
+end
+if tosave
+    stage_str = ['stage_',num2str(istage)];
+    saveloc = fullfile(saveloc, stage_str);
+    if ~isdir(saveloc)
+        mkdir(saveloc);
+    end
+end
+
 sz_M = size(M);
 fprintf('STEP 1 - SYNCHRONIZATION ESTIMATES\n');
 fprintf('\n');
 tic;
 [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_fullproc(ex, istage, M);
 t = toc;
+if tosave
+    saveas(gcf,[saveloc,'\1_raster_plot.fig']);
+    saveas(gcf,[saveloc,'\1_raster_plot.png']);
+end
 fprintf(['STEP 1 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 fprintf(['Estimated threshold for synchronizations: ',num2str(Pcutoff),'\n']);
@@ -49,6 +68,11 @@ tic;
 PAR.Nshuffle = 100;
 [thr, SMAP_real, COMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
 t = toc;
+if tosave
+    set(gcf,'units', 'normalized', 'position', [0.0807 0.105 0.86 0.735])
+    saveas(gcf,[saveloc,'\2_similarity_map.fig']);
+    saveas(gcf,[saveloc,'\2_similarity_map.png']);
+end
 fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 fprintf(['Maximum number of coactive cells occuring by chance is: ',num2str(thr),'\n']);
@@ -62,6 +86,10 @@ B = similarities_to_binary(SMAP_real, COMAP_real, thr);
 t = toc;
 fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
 figure;imagesc(B);
+if tosave
+    saveas(gcf,[saveloc,'\3_similarity_map_binary.fig']);
+    saveas(gcf,[saveloc,'\3_similarity_map_binary.png']);
+end
 title('Thresholded similarity matrix');
 fprintf('\n');
 
@@ -70,6 +98,10 @@ fprintf('\n');
 tic
 [redB, s, S, U, V] = svd_components(B);
 t = toc;
+if tosave
+    saveas(gcf,[saveloc,'\4_ensembles.fig']);
+    saveas(gcf,[saveloc,'\4_ensembles.png']);
+end
 fprintf(['STEP 6 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('SVD PROCESSED. B COMPONENTS CALCULATED (6) \n');
 fprintf('\n');
@@ -81,17 +113,10 @@ tic;
 t = toc;
 
 %plotting stimuli distribution for ensembles
-F = figure;
-set(F,'units', 'normalized', 'position', [0.0995 0.0954 0.81 0.75])
-
-N = 6;
-AX2 = autoaxes(F,2,ceil(N/2),[0.05 0.025 0.05 0.05],[0.025,0.05]);
-
-for in = 1:N
-    axes(AX2(in));
-    [h_counts, h_units] = hist(ENS(in).samps_stimid,unique(ENS(in).samps_stimid));
-    bar(h_units, h_counts);
-    title(['component ',num2str(in)]);
+ensemble_histograms(ENS);
+if tosave
+    saveas(gcf,[saveloc,'\5_ensemble_stimuli.fig']);
+    saveas(gcf,[saveloc,'\5_ensemble_stimuli.png']);
 end
 
 fprintf(['STEP 7 - DONE. Running time: ', num2str(t), ' seconds\n']);
