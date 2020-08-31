@@ -144,9 +144,9 @@ t = toc;
 fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 if tosave
-    saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
+%     saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
     saveas(F1,[saveloc,'\7_ensemble_on_raster.png']);
-    saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
+%     saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
     saveas(F2,[saveloc,'\8_ensemble_on_raster_individual.png']);
 end
 
