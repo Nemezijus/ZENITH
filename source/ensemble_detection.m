@@ -1,4 +1,4 @@
-function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff] = ensemble_detection(ex,M,istage,saveloc)
+function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detection(ex,M,istage,saveloc)
 % ensemble_detection(ex,M,istage) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -139,7 +139,7 @@ fprintf('\n');
 fprintf('STEP 9 - VISUALISING ENSEMBLES ON RASTER\n');
 fprintf('\n');
 tic;
-[F1,F2] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMP, SYNC, Pcutoff);
+[F1,F2,E] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMP, SYNC, Pcutoff);
 t = toc;
 fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');

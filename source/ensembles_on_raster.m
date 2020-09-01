@@ -1,4 +1,4 @@
-function [R, F2] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMPS, SYNC, Pcutoff)
+function [R, F2, E] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMPS, SYNC, Pcutoff)
 % R = ensembles_on_raster(ENS, B, redB, TFIDF) - collects ensemble ROIs and
 % their timings onto the raster plot
 %
@@ -45,6 +45,8 @@ for iens = 1:numel(ENS)
         va = TFIDF(:,a(ia));
         vb = TFIDF(:,b(ia));
         idxs = find(va.*vb);
+        E(iens).pair(ia).samples = [orig_samp_a,orig_samp_b];
+        E(iens).pair(ia).rois = idxs;
         empty_raster(idxs,[orig_samp_a,orig_samp_b]) = 1;
     end
 
