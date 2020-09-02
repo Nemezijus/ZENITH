@@ -32,7 +32,8 @@ ras = B; %raster
 t = toc;
 if tosave
     saveas(gcf,[saveloc,'\1_raster_plot.fig']);
-    saveas(gcf,[saveloc,'\1_raster_plot.png']);
+    print('-r600',gcf,[saveloc,'\1_raster_plot'],'-dpng');
+    pause(5)
 end
 fprintf(['STEP 1 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
@@ -72,7 +73,8 @@ t = toc;
 if tosave
     set(gcf,'units', 'normalized', 'position', [0.0807 0.105 0.86 0.735])
     saveas(gcf,[saveloc,'\2_similarity_map.fig']);
-    saveas(gcf,[saveloc,'\2_similarity_map.png']);
+    print('-r600',gcf,[saveloc,'\2_similarity_map'],'-dpng');
+    pause(5)
 end
 fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
@@ -89,7 +91,8 @@ fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
 figure;imagesc(B);
 if tosave
     saveas(gcf,[saveloc,'\3_similarity_map_binary.fig']);
-    saveas(gcf,[saveloc,'\3_similarity_map_binary.png']);
+    print('-r600',gcf,[saveloc,'\3_similarity_map_binary'],'-dpng');
+    pause(5)
 end
 title('Thresholded similarity matrix');
 fprintf('\n');
@@ -101,7 +104,8 @@ tic
 t = toc;
 if tosave
     saveas(gcf,[saveloc,'\4_ensembles.fig']);
-    saveas(gcf,[saveloc,'\4_ensembles.png']);
+    print('-r600',gcf,[saveloc,'\4_ensembles'],'-dpng');
+    pause(5)
 end
 fprintf(['STEP 6 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('SVD PROCESSED. B COMPONENTS CALCULATED (6) \n');
@@ -117,7 +121,8 @@ t = toc;
 ensemble_histograms(ENS);
 if tosave
     saveas(gcf,[saveloc,'\5_ensemble_stimuli.fig']);
-    saveas(gcf,[saveloc,'\5_ensemble_stimuli.png']);
+    print('-r600',gcf,[saveloc,'\5_ensemble_stimuli'],'-dpng');
+    pause(5)
 end
 
 fprintf(['STEP 7 - DONE. Running time: ', num2str(t), ' seconds\n']);
@@ -130,7 +135,8 @@ tic;
 t = toc;
 if tosave
     saveas(gcf,[saveloc,'\6_ensemble_vectors.fig']);
-    saveas(gcf,[saveloc,'\6_ensemble_vectors.png']);
+    print('-r600',gcf,[saveloc,'\6_ensemble_vectors'],'-dpng');
+    pause(5)
 end
 
 fprintf(['STEP 8 - DONE. Running time: ', num2str(t), ' seconds\n']);
@@ -145,8 +151,23 @@ fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 if tosave
 %     saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
-    saveas(F1,[saveloc,'\7_ensemble_on_raster.png']);
+    print('-r600',F1,[saveloc,'\7_ensemble_on_raster'],'-dpng');
+    pause(5)
 %     saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
-    saveas(F2,[saveloc,'\8_ensemble_on_raster_individual.png']);
+    print('-r600',F2,[saveloc,'\8_ensemble_on_raster_individual'],'-dpng');
+    pause(5)
 end
 
+fprintf('STEP 10 - VISUALISING ENSEMBLES ON DFF traces\n');
+fprintf('\n');
+tic
+F = ensembles_on_traces(E,ex,STIMSAMP,istage);
+t = toc;
+fprintf(['STEP 10 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('\n');
+if tosave
+    for iF = 1:numel(F)
+        print('-r600',F(iF),[saveloc,'\9_ensemble_on_dff_',num2str(iF)],'-dpng');
+        pause(5)
+    end
+end

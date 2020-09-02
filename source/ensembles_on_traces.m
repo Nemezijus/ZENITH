@@ -32,12 +32,28 @@ for ie = 1:Nens
     yl = [0, 2*numel(ST)+10];
     F(ie) = figure;
     affectedrecs = [];
+    affectedblanks = [];
     for irec = 1:Nrecs
         STIM(irec).samps = STIMSAMP.stim_on+STIMSAMP.full_s*(irec-1):STIMSAMP.stim_off+STIMSAMP.full_s*(irec-1);
         if sum(ismember(STIM(irec).samps,unsamples))> 1
             affectedrecs = unique([affectedrecs,irec]);
         end
     end
+    count1 = 1;
+    count2 = 1;
+    for iblank = 1:2*Nrecs
+        if mod(iblank,2) == 0
+            BLANK(iblank).samps = [STIMSAMP.stim_off+1:STIMSAMP.full_s]+STIMSAMP.full_s*(count2-1);
+            count2 = count2+1;
+        else
+            BLANK(iblank).samps = [1:STIMSAMP.stim_on-1]+STIMSAMP.full_s*(count1-1);
+            count1 = count1+1;
+        end
+        if sum(ismember(BLANK(iblank).samps,unsamples))> 1
+            affectedblanks = unique([affectedblanks,iblank]);
+        end
+    end
+    
     for irec = 1:Nrecs
         if ismember(irec,affectedrecs)
             col = [0.302 0.749 0.9294];
@@ -48,11 +64,19 @@ for ie = 1:Nens
             STIMSAMP.stim_off+STIMSAMP.full_s*(irec-1),STIMSAMP.stim_on+STIMSAMP.full_s*(irec-1)],...
             [yl(1),yl(1),yl(2),yl(2)],col,'EdgeColor','None','FaceAlpha',0.5);
     end
+    
+    for iblank = 1:2*Nrecs
+        if ismember(iblank,affectedblanks)
+            patch([BLANK(iblank).samps(1), BLANK(iblank).samps(end),BLANK(iblank).samps(end),BLANK(iblank).samps(1)],...
+            [yl(1),yl(1),yl(2),yl(2)],[0.7882 0.8784 0.5882],'EdgeColor','None','FaceAlpha',0.5);
+        end
+    end
     hold on
     for ist = 1: numel(ST)
         D(ist,:) = ST(ist).data+(ist-1)*2;
     end
     plot(D','k-');
+    ylim(yl);
 %     for ipair = 1:Npairs
 %         rois = E(ie).pair(ipair).rois;
 %         goodrois_idx = ismember(unROIs,rois);
@@ -62,5 +86,5 @@ for ie = 1:Nens
 %             plot(samples(isample),dd,'r.');
 %         end
 %     end
-clear unROIs unsamples ST affectedrecs STIM D
+clear unROIs unsamples ST affectedrecs affectedblanks STIM D
 end
