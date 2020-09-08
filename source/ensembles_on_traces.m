@@ -1,4 +1,4 @@
-function F = ensembles_on_traces(E,exp,STIMSAMP,istage)
+function F = ensembles_on_traces(E,exp,STIMSAMP,istage,Core)
 % ensembles_on_traces(E,exp,STIMSAMP,istage) - visualizes df/f traces of the ROIs
 % that are a part of detected ensembles
 %
@@ -75,7 +75,14 @@ for ie = 1:Nens
     for ist = 1: numel(ST)
         D(ist,:) = ST(ist).data+(ist-1)*2;
     end
-    plot(D','k-');
+    p = plot(D','k-');
+    ncore = Core(ie).core_allroi;
+    mcore = ismember(unROIs, ncore);
+    nline = 1:numel(unROIs);
+    nline = nline(mcore);
+    for icore = nline
+        p(icore).Color = [1 0 0];
+    end
     ylim(yl);
 %     for ipair = 1:Npairs
 %         rois = E(ie).pair(ipair).rois;

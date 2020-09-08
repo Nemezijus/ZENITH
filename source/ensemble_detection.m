@@ -158,12 +158,20 @@ if tosave
     pause(5)
 end
 
-fprintf('STEP 10 - VISUALISING ENSEMBLES ON DFF traces\n');
+fprintf('STEP 10 - DETECTING CORE NEURONS IN THE ENSEMBLES\n');
 fprintf('\n');
-tic
-F = ensembles_on_traces(E,ex,STIMSAMP,istage);
+tic;
+[Core] = ensemble_cores(TFIDF, E, STIMSAMP);
 t = toc;
 fprintf(['STEP 10 - DONE. Running time: ', num2str(t), ' seconds\n']);
+fprintf('\n');
+
+fprintf('STEP 11 - VISUALISING ENSEMBLES ON DFF traces\n');
+fprintf('\n');
+tic
+F = ensembles_on_traces(E,ex,STIMSAMP,istage,Core);
+t = toc;
+fprintf(['STEP 11 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
 if tosave
     for iF = 1:numel(F)
