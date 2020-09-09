@@ -1,4 +1,4 @@
-function [reM, time, onoff] = generate_network_spikes(ex, istage, par)
+function [M, time, onoff] = generate_network_spikes(ex, istage, par)
 % [M, time, onoff] = generate_network_spikes(ex, istage) - creates a matrix with 
 % [nroi x nstims*nreps*nsamples] dimensions, where the columns contain the
 % stitched spike probabilities. As the process is time consuming, we save
@@ -24,7 +24,7 @@ if nargin < 3
     load(PARloc);
 end
 
-reM = [];
+M = [];
 % refmx = ex.restun{istage};
 for iroi =1:ex.N_roi
     disp(['Processing ROI_', num2str(iroi)]);
@@ -40,15 +40,22 @@ for iroi =1:ex.N_roi
     %spM = export_spikes_woopsi(MM, fs);
     roi_stitched = ex.stitch(iroi, istage, 'dff');
     [spikes_ML] = export_MLspikes(roi_stitched, par);
-    reM = [reM; spikes_ML'];
+    M = [M; spikes_ML'];
 end
 [~, time, onoff] = downsampling_ca(1,ex, iroi, istage, 1, 1);
 
 % Part 2: saving
-FILEloc = 'C:\Users\nagy.dominika\Desktop';
 currloc = cd;
-cd(FILEloc)
-fname = ['m', ex.id, '_stage', num2str(istage),'_proper', '.mat'];
+floc_split = strsplit(ex.file_loc,'\');
+FILEloc= strjoin([floc_split(1:end-2), 'Other', 'Ensemble Analysis', 'MLSpike'], '\');
+% FILEloc = 'C:\Users\nagy.dominika\Desktop';
+try
+    cd(FILEloc)
+catch
+    mkdir(FILEloc)
+    cd(FILEloc)
+end
+fname = ['m', ex.id, '_stage', num2str(istage), '_mlspike', '.mat'];
 disp(['SAVING ', fname]);
-save(fname, 'reM', '-v7.3'); % modify name tag according to M nomenclature
+save(fname, 'M', '-v7.3'); % modify name tag according to M nomenclature
 cd(currloc)
