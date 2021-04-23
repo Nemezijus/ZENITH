@@ -1,4 +1,4 @@
-function [n] = export_MLspikes(roi_stitched, par)
+function [n] = export_MLspikes(roi_dff, par)
 % [Ffit, spikes] = export_MLspikes(roi_stitched, par) - exports MLspike data
 %
 % INPUTS:
@@ -30,8 +30,8 @@ if nargin < 2
     load(PARloc);
 end
 
-par.dt = (roi_stitched.time(2)-roi_stitched.time(1)) * 1e-3; %0.0323; 
+par.dt = (roi_dff.time(2)-roi_dff.time(1)) * 1e-3; %0.0323; 
 % par.a = 0.5;
 % par.tau = 0.6;
-ca_stitched = roi_stitched.data;
+ca_stitched = roi_dff.data;
 [n] = tps_mlspikes(ca_stitched', par);
