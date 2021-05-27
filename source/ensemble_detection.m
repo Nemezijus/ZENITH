@@ -1,5 +1,5 @@
 function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detection(ex,M,istage,saveloc)
-% ensemble_detection(ex,M,istage) - parent function that processes spiking
+% ensemble_detection(ex,M,istage, saveloc) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
 %   INPUTS:
@@ -21,6 +21,11 @@ if tosave
     if ~isdir(saveloc)
         mkdir(saveloc);
     end
+end
+has_stim = 1;
+%checking whether there is visual stimulation in this experiment
+if isempty(ex.stim_type)
+    has_stim = 0;
 end
 
 sz_M = size(M);
@@ -44,9 +49,14 @@ fprintf('STEP 2 - TEMPORAL VECTOR CREATION\n');
 fprintf('\n');
 tic;
 [TV, TVred, samples] = temporal_vectors(B, SYNC, Pcutoff, PAR);
-c_restun = ex.restun{istage};
-slist = export_stimulus_order(c_restun);
-[TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+
+if has_stim
+    c_restun = ex.restun{istage};
+    slist = export_stimulus_order(c_restun);
+    [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+else
+    TVall = TV;
+end
 t = toc;
 fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
