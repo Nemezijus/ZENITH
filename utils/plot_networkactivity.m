@@ -36,10 +36,14 @@ if PAR.Nrecs ~= ex.N_stim(istage)*ex.N_reps(istage)
     PAR.Nrecs = ex.N_stim(istage)*ex.N_reps(istage);
 end
 
-[~, t_ref, onoff, ~] = downsampling_ca(1, ex, 1, istage, 1, 1);
+[~, t_ref, onoff] = downsampling_ca(1, ex, 1, istage, 1, 1);
 raster_plot_multi(ex, B, t_ref, onoff, SYNC_real, PAR.pcutoff);
 
-STIMSAMP.full_s = numel(t_ref);
-STIMSAMP.full_xl = numel(SYNC_real);
-STIMSAMP.stim_on = onoff(1);
-STIMSAMP.stim_off = onoff(2);
+if any(ex.N_stim)
+    return
+else
+    STIMSAMP.full_s = numel(t_ref);
+    STIMSAMP.full_xl = numel(SYNC_real);
+    STIMSAMP.stim_on = onoff(1);
+    STIMSAMP.stim_off = onoff(2);
+end
