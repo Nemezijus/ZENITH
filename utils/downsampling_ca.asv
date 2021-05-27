@@ -32,9 +32,10 @@ else
     % Waveform object - we only need a reference time
     W = ex.stitch(iroi, istage, 'dff');
 end
-m = [];
+
 
 if binsize ~= 1
+    m = [];
     % Define start col
     if logical(mod(size(W.data,2),binsize))
         r = rem(size(W.data,2),binsize);
@@ -64,6 +65,7 @@ end
 % Reset time
 reftime = linspace(W.time(1,1), W.time(1,end), numel(W.time(1,:)));
 t = reftime;
+reftsam = 1:numel(reftime);
 
 if any(ex.N_stim)  
     % H5 attribute readout
@@ -76,11 +78,10 @@ if any(ex.N_stim)
     stime = visc_recall_stims(stimtype);
     
     % Time during stimuli
-    reftsam = 1:numel(reftime);
     stdur_idx = reftsam(reftime >= stime.static1 & reftime <= stime.blank2);
     io = [stdur_idx(1) stdur_idx(end)];
 else
-    io = [NaN NaN];
+    io = [N reftsam(end)];
 end
 
 

@@ -1,4 +1,4 @@
-function [n] = export_MLspikes(roi_dff, par)
+function [n] = export_MLspikes(roi_dff, mode)
 % [Ffit, spikes] = export_MLspikes(roi_stitched, par) - exports MLspike data
 %
 % INPUTS:
@@ -22,16 +22,43 @@ function [n] = export_MLspikes(roi_dff, par)
 %Based on visc_MLspike_single
 %Part of ZENITH source/utils
 
-if nargin < 2
-    loc = [mfilename('fullpath'),'.m'];%path to this HUB file
-    loc = strsplit(loc,'\');
-    loc = loc(1:end-2);
-    PARloc = strjoin({loc{:},'utils','MLs_PARS.mat'},'\');
-    load(PARloc);
-end
 
-par.dt = (roi_dff.time(2)-roi_dff.time(1)) * 1e-3; %0.0323; 
-% par.a = 0.5;
-% par.tau = 0.6;
-ca_stitched = roi_dff.data;
-[n] = tps_mlspikes(ca_stitched', par);
+calcium = roi_dff.data;
+switch mode
+    case 'old'
+        %
+        par = tps_mlspikes('par');
+        % (indicate the frame duration of the data)
+        par.dt = (roi_dff.time(2)-roi_dff.time(1)) * 1e-3;
+        % (set physiological parameters)
+        par.a = 0.4; % DF/F for one spike
+        par.tau = 0.6; % decay time constant (second)
+        % (set noise parameters)
+        par.finetune.sigma = .02;
+        % (do not display graph summary)
+        par.dographsummary = false;
+        %
+        [n] = tps_mlspikes(calcium', par);
+        %-- check
+        figure; plot(n*-1); hold on; plot(calcium);
+    case 'new'
+        par = tps_mlspikes('par');
+        % (indicate the frame duration of the data)
+        par.dt = (roi_dff.time(2)-roi_dff.time(1)) * 1e-3;
+        % (set physiological parameters)
+        par.a = 0.5; % DF/F for one spike
+        par.tau = 0.6; % decay time constant (second)
+        % (set noise parameters)
+        par.finetune.sigma = .02; % a priori level of noise (if par.finetune.sigma
+                                  % is left empty, MLspike has a low-level routine 
+                                  % to try estimating it from the data
+        par.drift.parameter = .01; % if par.drift parameter is not set, the 
+                                   % algorithm assumes that the baseline remains
+                                   % flat; it is also possible to tell the
+                                   % algorithm the value of the baseline by setting
+                                   % par.F0
+        % (do not display graph summary)
+        par.dographsummary = false;
+        % spike estimation
+        [spikest fit drift] = spk_est(calcium,par); % not what we want
+end

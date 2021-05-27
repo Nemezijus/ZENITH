@@ -45,6 +45,10 @@ end
 % adjust PAR
 PAR.pcutoff = Pcutoff;
 
+% median threshold
+[SYNC_mcutoff] = epilext_threshold_by_median(SYNC);
+PAR.mcutoff = SYNC_mcutoff;
+
 % visualize
 STIMSAMP = plot_networkactivity(ex, istage, B, SYNC, PAR);
 
