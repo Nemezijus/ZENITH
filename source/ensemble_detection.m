@@ -55,7 +55,7 @@ if has_stim
     slist = export_stimulus_order(c_restun);
     [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
 else
-    TVall = TV;
+    TVall = TVred;
 end
 t = toc;
 fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
