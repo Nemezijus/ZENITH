@@ -1,7 +1,7 @@
 function [ENS] = ensemble_decoding(SMred, TFIDF, STIMSAMP)
-% [ENS] = ensemble_decoding(SM, redSM, TFIDF, STIMSAMP) - remaps the participating 
+% [ENS] = ensemble_decoding(SM, redSM, TFIDF, STIMSAMP) - remaps the participating
 % significant temporal vectors based on the factorized binary matrices by
-% SVD (SMred) and generates the struct of neuronal ensembles to store the 
+% SVD (SMred) and generates the struct of neuronal ensembles to store the
 % population vectors, their original sample numbers and the corresponding stimulus id
 %
 %   INPUTS:
@@ -30,17 +30,19 @@ for n = 1:s(1)
             nvit = vit+1:s(2);
             for vjt = nvit
                 if SVDtri(vit, vjt)
-                    pv_idx = [pv_idx, vjt]; 
+                    pv_idx = [pv_idx, vjt];
                 end
             end
         end
     end
-%Part3 - Create mask for population vectors    
-pv_idx = unique(pv_idx);
-pv_mask = logical(zeros(1,s(2)));
-pv_mask(pv_idx) = 1;
-%Part4 - Fill up ENSemble struct
-ENS(n).pv = TFIDF(:,pv_mask);
-ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
-ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
+    %Part3 - Create mask for population vectors
+    pv_idx = unique(pv_idx);
+    pv_mask = logical(zeros(1,s(2)));
+    pv_mask(pv_idx) = 1;
+    %Part4 - Fill up ENSemble struct
+    ENS(n).pv = TFIDF(:,pv_mask);
+    if ~isnan(STIMSAMP.stim_on)
+        ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
+        ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
+    end
 end
