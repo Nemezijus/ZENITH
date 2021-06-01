@@ -50,13 +50,24 @@ fprintf('\n');
 tic;
 [TV, TVred, samples] = temporal_vectors(B, SYNC, Pcutoff, PAR);
 
+% if has_stim
+%     c_restun = ex.restun{istage};
+%     slist = export_stimulus_order(c_restun);
+%     [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+% else
+%     TVall = TVred;
+% end
+twin = 4;
 if has_stim
     c_restun = ex.restun{istage};
     slist = export_stimulus_order(c_restun);
-    [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+
 else
-    TVall = TVred;
+    SAMP = samples_of_teleported_to(ex, twin);
+    slist = SAMP.stage(istage);
 end
+[TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+
 t = toc;
 fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
 fprintf('\n');
