@@ -39,11 +39,7 @@ end
 [~, t_ref, onoff] = downsampling_ca(1, ex, 1, istage, 1, 1);
 raster_plot_multi(ex, B, t_ref, onoff, SYNC_real, PAR.pcutoff);
 
-if any(ex.N_stim)
-    return
-else
-    STIMSAMP.full_s = numel(t_ref);
-    STIMSAMP.full_xl = numel(SYNC_real);
-    STIMSAMP.stim_on = onoff(1);
-    STIMSAMP.stim_off = onoff(2);
-end
+STIMSAMP.full_s = numel(t_ref);
+STIMSAMP.full_xl = numel(SYNC_real);
+STIMSAMP.stim_on = onoff(1);
+STIMSAMP.stim_off = onoff(2);
