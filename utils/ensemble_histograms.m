@@ -14,7 +14,7 @@ end
 F = figure;
 set(F,'units', 'normalized', 'position', [0.0995 0.0954 0.81 0.75])
 
-N = 6;
+N = numel(ENS);
 AX2 = autoaxes(F,2,ceil(N/2),[0.05 0.025 0.05 0.05],[0.025,0.05]);
 for in = 1:N
     M(in) = sum(ENS(in).samps_stimid == mode(ENS(in).samps_stimid));
