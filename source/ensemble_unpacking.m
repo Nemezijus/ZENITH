@@ -38,7 +38,11 @@ for iens = 1:Nens
 end
 
 for iens = 1:Nens
-    first(iens) = find(rast(iens,:),1);
+    found = find(rast(iens,:),1);
+    if isempty(found)
+        found = Inf;
+    end
+    first(iens) = found;
 end
 [~,Bsort]=sort(first); %Get the order of B
 sort_rast = rast(Bsort,:);
