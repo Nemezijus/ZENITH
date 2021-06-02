@@ -18,6 +18,7 @@ function [ENS] = ensemble_decoding(SMred, TFIDF, STIMSAMP)
 % Part of ZENITH source
 
 s = size(SMred);
+counter = 1;
 for n = 1:s(1)
     %Part1 - Multidimensional array unpacking
     SVD(:,:) = SMred(n,:,:);
@@ -36,12 +37,16 @@ for n = 1:s(1)
         end
     end
     %Part3 - Create mask for population vectors
-    pv_idx = unique(pv_idx);
-    pv_mask = logical(zeros(1,s(2)));
-    pv_mask(pv_idx) = 1;
-    %Part4 - Fill up ENSemble struct
-    ENS(n).pv = TFIDF(:,pv_mask);
-    ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
-    ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
-  
+    if isempty(pv_idx)
+        continue
+    else
+        pv_idx = unique(pv_idx);
+        pv_mask = logical(zeros(1,s(2)));
+        pv_mask(pv_idx) = 1;
+        %Part4 - Fill up ENSemble struct
+        ENS(counter).pv = TFIDF(:,pv_mask);
+        ENS(counter).samps_orig = STIMSAMP.samps_orig(pv_mask);
+        ENS(counter).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
+        counter = counter + 1;
+    end
 end
