@@ -61,7 +61,6 @@ twin = 4;
 if has_stim
     c_restun = ex.restun{istage};
     slist = export_stimulus_order(c_restun);
-
 else
     SAMP = samples_of_teleported_to(ex, twin);
     slist = SAMP.stage(istage);

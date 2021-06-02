@@ -41,8 +41,7 @@ for n = 1:s(1)
     pv_mask(pv_idx) = 1;
     %Part4 - Fill up ENSemble struct
     ENS(n).pv = TFIDF(:,pv_mask);
-    if ~isnan(STIMSAMP.stim_on)
-        ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
-        ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
-    end
+    ENS(n).samps_orig = STIMSAMP.samps_orig(pv_mask);
+    ENS(n).samps_stimid = STIMSAMP.samps_stimid(pv_mask);
+  
 end

@@ -32,7 +32,7 @@ end
 
 if isVR
     ss = size(samples);
-%   LIST approach 
+%     
     samps_stimid = zeros(ss);
     for nf=1:numel(scanFields)
         ismember_of_scanFields = ismember(samples, slist.(scanFields{nf}{1}));
@@ -44,7 +44,7 @@ if isVR
             end
         end
     end
-%     CELLarray approach
+%     CELL
 %     samps_stimid = cell(ss);
 %     for nf=1:numel(scanFields)
 %         ismember_of_scanFields = ismember(samples, slist.(scanFields{nf}));
