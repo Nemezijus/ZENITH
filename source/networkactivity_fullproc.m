@@ -52,6 +52,10 @@ PAR.mcutoff = SYNC_mcutoff;
 % visualize
 STIMSAMP = plot_networkactivity(ex, istage, B, SYNC, PAR);
 
-
-
+%code below is to be made more adaptable [one day]
+if sum(ex.N_stim) == 0
+    PAR.stimlist = [0, 1, 2];%0 - not after teleport, 1 - to reward 2 - to clouds
+else
+    PAR.stimlist = [0:45:315,666,999];
+end
 

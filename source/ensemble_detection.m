@@ -138,7 +138,7 @@ tic;
 t = toc;
 
 %plotting stimuli distribution for ensembles
-ensemble_histograms(ENS);
+ensemble_histograms(ENS, PAR.stimlist);
 if tosave
     saveas(gcf,[saveloc,'\5_ensemble_stimuli.fig']);
     print('-r600',gcf,[saveloc,'\5_ensemble_stimuli'],'-dpng');
