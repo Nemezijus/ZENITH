@@ -48,5 +48,6 @@ B = discreet_to_binary(M);
 
 [SYNC, SYNC_shuffled] = ROI_synchrony(B, PAR.Nshuffle, PAR.rule, PAR.samp_window);
 
-Pcutoff = gauss_fit_on_shuffles(SYNC_shuffled, PAR.pval, 1);
+% Pcutoff = gauss_fit_on_shuffles(SYNC_shuffled, PAR.pval, 1); %old method
+Pcutoff = coactivity_threshold(SYNC_shuffled, max(SYNC), PAR.pval, 1);
 % Pcutoff = pval_teststat(SYNC_shuffled, PAR.pval);
