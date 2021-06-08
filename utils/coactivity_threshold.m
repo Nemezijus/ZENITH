@@ -38,3 +38,10 @@ NCPmean = mean(NCP);
 
 th_idx = find(NCPmean>=(1-pval),1,'first');
 Thr = linaxis(th_idx);
+
+if toplot
+    figure;plot(linaxis,NCPmean,'k-'); hold on
+    plot([Thr,Thr],[0,1],'r-');
+    xlabel('Coactivity count');
+    ylabel('Probability');
+end

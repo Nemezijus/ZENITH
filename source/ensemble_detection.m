@@ -10,6 +10,8 @@ function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detectio
 %               happens
 %
 %part of ZENITH
+
+
 if nargin < 4
     tosave = 0;
 else
@@ -27,6 +29,15 @@ has_stim = 1;
 if isempty(ex.stim_type)
     has_stim = 0;
 end
+
+%reducing M to only those ROIs that have any activity
+Midx = 1:numel(M(:,1));
+rowsum = sum(M,2);
+responsiveM = M(rowsum>0,:);
+realROIidx = Midx(rowsum>0);
+removed = numel(M(:,1)) - numel(realROIidx);
+M = responsiveM;
+disp([num2str(removed),' ROIs were removed due to showing no activity']);
 
 sz_M = size(M);
 fprintf('STEP 1 - SYNCHRONIZATION ESTIMATES\n');
