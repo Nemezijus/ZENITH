@@ -10,7 +10,7 @@ function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detectio
 %               happens
 %
 %part of ZENITH
-
+procedure = 'updated';
 
 if nargin < 4
     tosave = 0;
@@ -59,7 +59,9 @@ fprintf('\n');
 fprintf('STEP 2 - TEMPORAL VECTOR CREATION\n');
 fprintf('\n');
 tic;
-[TV, TVred, samples] = temporal_vectors(B, SYNC, Pcutoff, PAR);
+binsize = 5;
+[TV, TVred, samples, start_end, peak_size] = temporal_peak_vectors(B, SYNC, Pcutoff, binsize, PAR);
+% [TV, TVred, samples] = temporal_vectors(B, SYNC, Pcutoff, PAR);
 
 % if has_stim
 %     c_restun = ex.restun{istage};
@@ -76,137 +78,148 @@ else
     SAMP = samples_of_teleported_to(ex, twin);
     slist = SAMP.stage(istage);
 end
-[TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
 
-t = toc;
-fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-
-fprintf('STEP 3 - TF-IDF NORMALIZATION\n');
-fprintf('\n');
-tic;
-TFIDF = tfidf(TVall);
-sz_tfidf = size(TFIDF);
-t = toc;
-fprintf(['STEP 3 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf(['TFIDF matrix generated. Number of significant time vectors is ',...
-    num2str(sz_tfidf(2)),'/',num2str(sz_M(2)),'\n']);
-fprintf('\n');
-
-fprintf('STEP 4 - SIMILARITY MATRIX ESTIMATION\n');
-fprintf('\n');
-P = 5;
-% fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
-tic;
-PAR.Nshuffle = 100;
-[thr, SMAP_real, COMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
-t = toc;
-if tosave
-    set(gcf,'units', 'normalized', 'position', [0.0807 0.105 0.86 0.735])
-    saveas(gcf,[saveloc,'\2_similarity_map.fig']);
-    print('-r600',gcf,[saveloc,'\2_similarity_map'],'-dpng');
-    pause(5)
-end
-fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-fprintf(['Maximum number of coactive cells occuring by chance is: ',num2str(thr),'\n']);
-fprintf('\n');
-
-fprintf('STEP 5 - THRESHOLDING SIMILARITY MATRIX\n');
-fprintf('\n');
-
-tic
-B = similarities_to_binary(SMAP_real, COMAP_real, thr);
-t = toc;
-fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
-figure;imagesc(B);
-if tosave
-    saveas(gcf,[saveloc,'\3_similarity_map_binary.fig']);
-    print('-r600',gcf,[saveloc,'\3_similarity_map_binary'],'-dpng');
-    pause(5)
-end
-title('Thresholded similarity matrix');
-fprintf('\n');
-
-fprintf('STEP 6 - ESTIMATING SVD\n');
-fprintf('\n');
-tic
-[redB, s, S, U, V] = svd_components(B);
-t = toc;
-if tosave
-    saveas(gcf,[saveloc,'\4_ensembles.fig']);
-    print('-r600',gcf,[saveloc,'\4_ensembles'],'-dpng');
-    pause(5)
-end
-fprintf(['STEP 6 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('SVD PROCESSED. B COMPONENTS CALCULATED (6) \n');
-fprintf('\n');
-
-fprintf('STEP 7 - DECODING ENSEMBLES\n');
-fprintf('\n');
-tic;
-[ENS] = ensemble_decoding(redB, TFIDF, STIMSAMP);
-t = toc;
-
-%plotting stimuli distribution for ensembles
-ensemble_histograms(ENS, PAR.stimlist);
-if tosave
-    saveas(gcf,[saveloc,'\5_ensemble_stimuli.fig']);
-    print('-r600',gcf,[saveloc,'\5_ensemble_stimuli'],'-dpng');
-    pause(5)
-end
-
-fprintf(['STEP 7 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-
-fprintf('STEP 8 - UNPACKING ENSEMBLES\n');
-fprintf('\n');
-tic;
-[TVens, ROIids] = ensemble_unpacking(redB, TFIDF);
-t = toc;
-if tosave
-    saveas(gcf,[saveloc,'\6_ensemble_vectors.fig']);
-    print('-r600',gcf,[saveloc,'\6_ensemble_vectors'],'-dpng');
-    pause(5)
-end
-
-fprintf(['STEP 8 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-
-fprintf('STEP 9 - VISUALISING ENSEMBLES ON RASTER\n');
-fprintf('\n');
-tic;
-[F1,F2,E] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMP, SYNC, Pcutoff);
-t = toc;
-fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-if tosave
-%     saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
-    print('-r600',F1,[saveloc,'\7_ensemble_on_raster'],'-dpng');
-    pause(5)
-%     saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
-    print('-r600',F2,[saveloc,'\8_ensemble_on_raster_individual'],'-dpng');
-    pause(5)
-end
-
-fprintf('STEP 10 - DETECTING CORE NEURONS IN THE ENSEMBLES\n');
-fprintf('\n');
-tic;
-[Core] = ensemble_cores(TFIDF, E, STIMSAMP);
-t = toc;
-fprintf(['STEP 10 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-
-fprintf('STEP 11 - VISUALISING ENSEMBLES ON DFF traces\n');
-fprintf('\n');
-tic
-F = ensembles_on_traces(E,ex,STIMSAMP,istage,Core);
-t = toc;
-fprintf(['STEP 11 - DONE. Running time: ', num2str(t), ' seconds\n']);
-fprintf('\n');
-if tosave
-    for iF = 1:numel(F)
-        print('-r600',F(iF),[saveloc,'\9_ensemble_on_dff_',num2str(iF)],'-dpng');
-        pause(5)
-    end
+%here we branch out - either using older TF-IDF method or the new linkage
+%method
+distmethod = 'euclidean';
+switch procedure
+    case 'updated'
+        similarity = peak_similarity(TVred, distmethod);
+        figure;imagesc(similarity);
+        set(gca,'YDir','normal');
+    otherwise
+        [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
+        
+        t = toc;
+        fprintf(['STEP 2 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 3 - TF-IDF NORMALIZATION\n');
+        fprintf('\n');
+        tic;
+        TFIDF = tfidf(TVall);
+        sz_tfidf = size(TFIDF);
+        t = toc;
+        fprintf(['STEP 3 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf(['TFIDF matrix generated. Number of significant time vectors is ',...
+            num2str(sz_tfidf(2)),'/',num2str(sz_M(2)),'\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 4 - SIMILARITY MATRIX ESTIMATION\n');
+        fprintf('\n');
+        P = 5;
+        % fprintf(['Performing ',num2str(PAR.Nshuffle),' shuffles across columns\n']);
+        tic;
+        PAR.Nshuffle = 100;
+        [thr, SMAP_real, COMAP_real] = similaritythreshold(TFIDF, PAR.Nshuffle, P, 1);
+        t = toc;
+        if tosave
+            set(gcf,'units', 'normalized', 'position', [0.0807 0.105 0.86 0.735])
+            saveas(gcf,[saveloc,'\2_similarity_map.fig']);
+            print('-r600',gcf,[saveloc,'\2_similarity_map'],'-dpng');
+            pause(5)
+        end
+        fprintf(['STEP 4 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        fprintf(['Maximum number of coactive cells occuring by chance is: ',num2str(thr),'\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 5 - THRESHOLDING SIMILARITY MATRIX\n');
+        fprintf('\n');
+        
+        tic
+        B = similarities_to_binary(SMAP_real, COMAP_real, thr);
+        t = toc;
+        fprintf(['STEP 5 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        figure;imagesc(B);
+        if tosave
+            saveas(gcf,[saveloc,'\3_similarity_map_binary.fig']);
+            print('-r600',gcf,[saveloc,'\3_similarity_map_binary'],'-dpng');
+            pause(5)
+        end
+        title('Thresholded similarity matrix');
+        fprintf('\n');
+        
+        fprintf('STEP 6 - ESTIMATING SVD\n');
+        fprintf('\n');
+        tic
+        [redB, s, S, U, V] = svd_components(B);
+        t = toc;
+        if tosave
+            saveas(gcf,[saveloc,'\4_ensembles.fig']);
+            print('-r600',gcf,[saveloc,'\4_ensembles'],'-dpng');
+            pause(5)
+        end
+        fprintf(['STEP 6 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('SVD PROCESSED. B COMPONENTS CALCULATED (6) \n');
+        fprintf('\n');
+        
+        fprintf('STEP 7 - DECODING ENSEMBLES\n');
+        fprintf('\n');
+        tic;
+        [ENS] = ensemble_decoding(redB, TFIDF, STIMSAMP);
+        t = toc;
+        
+        %plotting stimuli distribution for ensembles
+        ensemble_histograms(ENS, PAR.stimlist);
+        if tosave
+            saveas(gcf,[saveloc,'\5_ensemble_stimuli.fig']);
+            print('-r600',gcf,[saveloc,'\5_ensemble_stimuli'],'-dpng');
+            pause(5)
+        end
+        
+        fprintf(['STEP 7 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 8 - UNPACKING ENSEMBLES\n');
+        fprintf('\n');
+        tic;
+        [TVens, ROIids] = ensemble_unpacking(redB, TFIDF);
+        t = toc;
+        if tosave
+            saveas(gcf,[saveloc,'\6_ensemble_vectors.fig']);
+            print('-r600',gcf,[saveloc,'\6_ensemble_vectors'],'-dpng');
+            pause(5)
+        end
+        
+        fprintf(['STEP 8 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 9 - VISUALISING ENSEMBLES ON RASTER\n');
+        fprintf('\n');
+        tic;
+        [F1,F2,E] = ensembles_on_raster(ENS, ras, redB, TFIDF, STIMSAMP, SYNC, Pcutoff);
+        t = toc;
+        fprintf(['STEP 9 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        if tosave
+            %     saveas(F1,[saveloc,'\7_ensembles_on_raster.fig']);
+            print('-r600',F1,[saveloc,'\7_ensemble_on_raster'],'-dpng');
+            pause(5)
+            %     saveas(F2,[saveloc,'\8_ensembles_on_raster_individual.fig']);
+            print('-r600',F2,[saveloc,'\8_ensemble_on_raster_individual'],'-dpng');
+            pause(5)
+        end
+        
+        fprintf('STEP 10 - DETECTING CORE NEURONS IN THE ENSEMBLES\n');
+        fprintf('\n');
+        tic;
+        [Core] = ensemble_cores(TFIDF, E, STIMSAMP);
+        t = toc;
+        fprintf(['STEP 10 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        
+        fprintf('STEP 11 - VISUALISING ENSEMBLES ON DFF traces\n');
+        fprintf('\n');
+        tic
+        F = ensembles_on_traces(E,ex,STIMSAMP,istage,Core);
+        t = toc;
+        fprintf(['STEP 11 - DONE. Running time: ', num2str(t), ' seconds\n']);
+        fprintf('\n');
+        if tosave
+            for iF = 1:numel(F)
+                print('-r600',F(iF),[saveloc,'\9_ensemble_on_dff_',num2str(iF)],'-dpng');
+                pause(5)
+            end
+        end
 end
