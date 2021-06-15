@@ -88,7 +88,8 @@ switch procedure
         [similarity, linktree] = peak_similarity(TVred, distmethod, linkagemethod);
         figure;imagesc(similarity);
         set(gca,'YDir','normal');
-        figure;dendrogram(linktree);
+        figure;dendrogram(linktree,0);
+        a=1;
     otherwise
         [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
         
