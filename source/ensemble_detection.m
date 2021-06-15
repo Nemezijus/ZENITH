@@ -86,9 +86,20 @@ linkagemethod = 'ward';
 switch procedure
     case 'updated'
         [similarity, linktree] = peak_similarity(TVred, distmethod, linkagemethod);
-        figure;imagesc(similarity);
+        figure;
+        set(gcf,'units', 'normalized', 'position', [0.119 0.388 0.797 0.335]);
+        subplot(1,3,1);
+        imagesc(similarity);
         set(gca,'YDir','normal');
-        figure;dendrogram(linktree,0);
+        title('Similarity');
+        subplot(1,3,2);
+        [han, nodes, perms] = dendrogram(linktree,0);
+        title('Linkage');
+        set(gca,'xtick',[]);
+        subplot(1,3,3);
+        imagesc(similarity(perms,perms));
+        title('Similarity sorted');
+        set(gca,'YDir','normal');
         a=1;
     otherwise
         [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
