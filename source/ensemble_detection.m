@@ -87,8 +87,8 @@ switch procedure
     case 'updated'
         [similarity, linktree] = peak_similarity(TVred, distmethod, linkagemethod);
         figure;imagesc(similarity);
-        figure;dendrogram(linktree);
         set(gca,'YDir','normal');
+        figure;dendrogram(linktree);
     otherwise
         [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
         
