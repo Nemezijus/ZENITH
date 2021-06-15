@@ -82,9 +82,10 @@ end
 %here we branch out - either using older TF-IDF method or the new linkage
 %method
 distmethod = 'euclidean';
+linkagemethod = 'ward';
 switch procedure
     case 'updated'
-        similarity = peak_similarity(TVred, distmethod);
+        [similarity, linktree] = peak_similarity(TVred, distmethod, linkagemethod);
         figure;imagesc(similarity);
         set(gca,'YDir','normal');
     otherwise
