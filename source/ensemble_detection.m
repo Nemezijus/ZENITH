@@ -389,13 +389,20 @@ for iclu = 1:Nclu
 end
 
 axes(ax(1));
-pie(sum(Y,2),pie_label);
+PIE = pie(sum(Y,2),pie_label);
 patchHand = findobj(gca, 'Type', 'Patch');
 patchHand = flipud(patchHand);%temporary fix?
 newC = d.COL.raster(1:Nclu,:);
 set(patchHand, {'FaceColor'}, mat2cell(newC, ones(size(newC,1),1), 3));
 title('NPeaks per Cluster')
 % ax(1).View = [120 90];
+
+
+text_handles = PIE(2:2:end);
+for ihandle = 1:numel(text_handles);
+    text_handles(ihandle).Rotation = 45;
+end
+
 y = Y';
 axes(ax(2));
 X = categorical(x);
