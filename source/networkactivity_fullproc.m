@@ -1,4 +1,4 @@
-function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_fullproc(ex, istage, M, PAR)
+function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_fullproc(ex, istage, M, PAR, fig)
 % networkactivity_fullproc(ex, PAR) - is a script which runs each steps of
 % network activity evaluation leading leading to its visualization
 %
@@ -15,6 +15,7 @@ function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_full
 %           defined stage
 %       PAR - struct containing essential parameters for running the
 %           network activity evaluation
+%       fig - handle to figure on which plotting occurs
 % 
 %   OUTPUTS:
 %       SYNC - synchronization vector of real data M
@@ -25,8 +26,10 @@ function [SYNC, Pcutoff, B, SYNC_shuffled, STIMSAMP, PAR] = networkactivity_full
 %               the on- and offset of vistim 
 %
 %Part of ZENITH
-
-if nargin < 4
+if nargin < 5
+    fig = [];
+end
+if nargin < 4 | isempty(PAR)
     loc = [mfilename('fullpath'),'.m'];%path to this HUB file
     loc = strsplit(loc,'\');
     loc = loc(1:end-2);
@@ -38,9 +41,15 @@ end
 if PAR.Nrecs ~= ex.N_stim(istage)*ex.N_reps(istage)
     PAR.Nrecs = ex.N_stim(istage)*ex.N_reps(istage);
 end
+w = traces(ex, {1,1,1,1,0},'raw');
+t = w.time(1,:);
+ts = mean(diff(t))*1e-3;
+Fs = 1/ts;
+disp(['Sampling Frequency is: ',num2str(Fs), ' Hz']);
 
+PAR.Fs = Fs;
 % run synchronized evaluation methods
-[SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR);
+[SYNC, Pcutoff, B, SYNC_shuffled] = synchronizations(M,PAR, fig);
 
 % adjust PAR
 PAR.pcutoff = Pcutoff;
@@ -50,7 +59,7 @@ PAR.pcutoff = Pcutoff;
 PAR.mcutoff = SYNC_mcutoff;
 
 % visualize
-STIMSAMP = plot_networkactivity(ex, istage, B, SYNC, PAR);
+STIMSAMP = plot_networkactivity(ex, istage, B, SYNC, PAR, fig);
 
 %code below is to be made more adaptable [one day]
 if sum(ex.N_stim) == 0

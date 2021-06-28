@@ -1,4 +1,4 @@
-function [SYNC_real, SYNC_shuffled, SH] = ROI_synchrony(B, Nshuffle, rule, samp_window)
+function [SYNC_real, SYNC_shuffled, SH] = ROI_synchrony(B, Nshuffle, rule, samp_window, Fs)
 % [SYNC_real, SYNC_shuffled, SH] = ROI_synchrony(B, Nshuffle, rule,
 % samp_window) - collects synchronization vectors of real data and its
 % multiple shuffles.
@@ -9,6 +9,7 @@ function [SYNC_real, SYNC_shuffled, SH] = ROI_synchrony(B, Nshuffle, rule, samp_
 %       rule - shuffling rule (string). Default - 'intervals'.
 %       samp_window - size of sampling window in samples for synchrony
 %       estimate (default - 3).
+%       Fs - sampling frequency in Hz 
 %
 %   OUTPUTS:
 %       SYNC_real - synchronization vector of real data in B
@@ -17,6 +18,9 @@ function [SYNC_real, SYNC_shuffled, SH] = ROI_synchrony(B, Nshuffle, rule, samp_
 %
 %Part of ZENITH source
 toplot = 0;
+if nargin < 5
+    Fs = [];
+end
 if nargin < 4
     samp_window = 3;
 end
@@ -27,6 +31,14 @@ end
 
 if nargin < 2
     Nshuffle = 1000;
+end
+
+
+%SAMP WINDOW
+if ~isempty(Fs)
+    Ns = numel(B(1,:));
+    smooth_filter = local_smooth_filter(Fs, Ns);
+    samp_window = smooth_filter * Fs/1000;
 end
 if toplot
     figure;
@@ -62,3 +74,35 @@ for ib = 1:numel(B(:,1))
     [~,b{ib}] = find(B(ib,:));
 
 end
+
+function user_entry = local_smooth_filter(Fs, Ns)
+def = 100;
+user_entry = def;
+default = round(5000/Fs);
+minimum = round(1000/Fs);
+maximum = round(Ns*1000/Fs);
+multiple = 1;
+if ~isnan(user_entry)
+    user_entry=floor(user_entry);
+    if(user_entry<0)
+        neg=true;
+        user_entry=-user_entry;
+    end
+    % verify if the data is between the limits
+    if(user_entry>maximum)
+        user_entry=maximum;
+    elseif(user_entry<minimum)
+        user_entry=minimum;
+    end
+else
+    user_entry=default;
+end
+
+if(multiple)
+    times=round(user_entry/minimum);
+    user_entry=minimum*times;
+end
+
+% if(negative && neg)
+%     user_entry=-user_entry;
+% end

@@ -1,4 +1,4 @@
-function raster_plot_multi(ex, B, t, onoff, SYNC_real, p_thr)
+function raster_plot_multi(ex, B, t, onoff, SYNC_real, p_thr, fig)
 % raster_plot_multi(ncell, iroi, istage, istim) - creats raster plots of
 % single cell or the complete cell population
 %
@@ -10,6 +10,7 @@ function raster_plot_multi(ex, B, t, onoff, SYNC_real, p_thr)
 %       SYNC_real - synchronization vector of real data M
 %       p_thr - number of synchronizations threshold below which
 %               synchronizations happen by chance
+%       fig - handle to main figure if plotting there
 %
 %see also raster_plot, probability_to_binary, export_spikes_woopsi
 %Part of ZENITH utils
@@ -22,6 +23,11 @@ function raster_plot_multi(ex, B, t, onoff, SYNC_real, p_thr)
 %     B = M;
 % end
 
+if nargin < 7 | isempty(fig)
+    mainfigure = 0;
+else
+    mainfigure = 1;
+end
 if any(ex.N_stim)
     % "STITCHING" TIME TOGETHER (in min)
     % minute_multiplier = 1e-3;
@@ -34,13 +40,20 @@ else
 end
 
 % RASTER STRIKE & PLOTTING
-F = figure;
-set(F,'units', 'normalized', 'position', [0.174 0.406 0.643 0.354]);
-AX1 = axes; ax_refpos = get(AX1, 'Position');
-AX2 = axes;
-AX1.Position([2,4]) = [AX1.Position(2) + 0.15 AX1.Position(4) - 0.15];
-AX2.Position = ax_refpos;
-AX2.Position(4) = 0.15;
+if ~mainfigure
+    F = figure;
+    set(F,'units', 'normalized', 'position', [0.174 0.406 0.643 0.354]);
+    AX1 = axes; ax_refpos = get(AX1, 'Position');
+    AX2 = axes;
+    AX1.Position([2,4]) = [AX1.Position(2) + 0.15 AX1.Position(4) - 0.15];
+    AX2.Position = ax_refpos;
+    AX2.Position(4) = 0.15;
+else
+    AX1 = axes(fig,'Position',[0.0268 0.5326 0.4701 0.4609],'Tag', 'raster');
+    AX2 = axes(fig,'Position',[0.0268 0.4039 0.4701 0.1308],'Tag', 'coactivations');
+    drawnow
+end
+
 axes(AX1)
 for im = 0:numel(B(:,1))-1
     spikes = B(im+1,:);
@@ -55,8 +68,27 @@ for im = 0:numel(B(:,1))-1
     yPoints = yPoints(:);
     r(im+1) = plot(xPoints,yPoints,'k');
     hold on
+    drawnow
 end
+d = guidata(fig);
+d.raster_x = Time;
+guidata(d.F, d);
 axes(AX2)
+try
+    yl = max(SYNC_real);
+    for icl = 1:numel(d.STIM.clouds(:,1))
+        x = Time([d.STIM.clouds(icl,1) d.STIM.clouds(icl,end) d.STIM.clouds(icl,end) d.STIM.clouds(icl,1)]);
+        y = [0 0 yl yl];
+        patch(x,y,[0.65 0.65 0.65],'FaceAlpha',.5,'EdgeColor','None');hold on
+    end
+    for irew = 1:numel(d.STIM.reward(:,1))
+        x = Time([d.STIM.reward(irew,1) d.STIM.reward(irew,end) d.STIM.reward(irew,end) d.STIM.reward(irew,1)]);
+        y = [0 0 yl yl];
+        patch(x,y,[0.6275 0.7216 0.9098],'FaceAlpha',.5,'EdgeColor','None');hold on
+    end
+catch
+end
+ylim('auto');
 plot(Time, SYNC_real, 'k');
 hold on
 plot(Time, p_thr*ones(1,numel(Time)), 'r-');
@@ -109,3 +141,6 @@ AX2.YLabel.String ='cell activity intensity';
 AX2.YLabel.FontSize = 8;
 AX2.XLabel.String = 'time, ms';
 AX2.XLabel.FontSize = 8;
+
+set(AX1,'Tag', 'raster');
+set(AX2,'Tag', 'coactivations');

@@ -1,4 +1,4 @@
-function [TV, TVred, samples, peak_start_end, peak_size] = temporal_peak_vectors(B, SYNC, Pcutoff, binsize, PAR)
+function [TV, TVred, samples, peak_start_end, peak_size] = temporal_peak_vectors(B, SYNC, Pcutoff, binsize, PAR, fig)
 % [TV, TVred, samples] = temporal_peak_vectors(B, SYNC, Pcutoff, binsize, PAR) - creates
 % temporal vector binary matrix where each column represents time point and
 % every row - 1 or 0 - whether the ROI is coactive or not.
@@ -7,7 +7,7 @@ function [TV, TVred, samples, peak_start_end, peak_size] = temporal_peak_vectors
 %       B - binary spike matrix
 %       SYNC - synchronization vector of real data
 %       Pcutoff - threshold of synchronizations for a given P value
-%       binsize - 
+%       binsize - {useless so far}
 %       PAR - parameter struct
 %
 %   OUTPUTS:
@@ -35,8 +35,13 @@ if nargin < 5
     PARloc = strjoin({loc{:},'utils','SYNC_PARS.mat'},'\');
     load(PARloc);
 end
+if nargin < 6 | isempty(fig)
+    mainfigure = 0;
+else
+    mainfigure = 1;
+end
 
-SYNC = SYNC';
+% SYNC = SYNC';
 idx = 1:numel(SYNC);
 idx_above_threshold = idx(SYNC>Pcutoff)';
 
@@ -78,13 +83,26 @@ for ipeak = 1:Npeaks
     peak_size(ipeak) = max(SYNC(range));
     new_SYNC(range) = deal(peak_size(ipeak));
 end
-figure;
-set(gcf,'units', 'normalized', 'position', [0.0807 0.531 0.855 0.131]);
-plot(SYNC,'k-'); hold on;
-plot([1,numel(SYNC)],[Pcutoff,Pcutoff],'b-');
-plot(new_SYNC,'r-');
-a=1;
+if ~mainfigure
+    figure;
+    set(gcf,'units', 'normalized', 'position', [0.0807 0.531 0.855 0.131]);
+    plot(SYNC,'k-'); hold on;
+    plot([1,numel(SYNC)],[Pcutoff,Pcutoff],'b-');hold on
+    plot(new_SYNC,'r-');
+else
+    ch = get(fig,'Children');
+    axes(ch(strcmp({ch.Tag},'coactivations')));
+    ax = gca;
+    for ich = 1:numel(ax.Children)
+        if numel(ax.Children(ich).XData) == numel(new_SYNC)
+            child = ax.Children(ich);
+            break
+        end
+    end
+    plot(child.XData, new_SYNC,'r-');
+end
 
+drawnow
 % see "Get_Peak_Vectors"
 %this is the 'sum' method implemented
 Nrois = size(B,1);
@@ -93,7 +111,7 @@ for ipeak = 1:Npeaks
     cpeak = B(:,peak_vector==ipeak);
     TVred(ipeak,:) = sum(cpeak,2);
 end
-a=1;
+
 TVred = TVred';
 TV = B(:,peak_vector>0);
 samples = peak_vector; %convenience rename
