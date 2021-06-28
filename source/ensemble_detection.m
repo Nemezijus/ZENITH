@@ -1,4 +1,5 @@
-function [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detection(ex,M,istage,saveloc)
+function [CLU, B] = ensemble_detection(ex,M,istage,saveloc)
+% [B,redB,s,TFIDF,STIMSAMP, ENS, ras,SYNC,Pcutoff, E] = ensemble_detection(ex,M,istage,saveloc)
 % ensemble_detection(ex,M,istage, saveloc) - parent function that processes spiking
 % activity of experiment and estimates the ensembles within the population
 %
@@ -155,6 +156,7 @@ switch procedure
         set(AX2(3),'visible','off');
         [CLU, structure] = rois2clusters(B, CLU);
         plot_rois_in_clusters(structure, F, CLU, B);
+        disp('DONE');
     otherwise
         [TVall, STIMSAMP] = temporal_vectors_durstim(B, samples, STIMSAMP, slist);
         
